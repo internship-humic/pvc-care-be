@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import BaseError from "../common/base_classes/base-error.js";
 import Prisma from "../common/services/prisma.service.js";
-import logger from "../utils/logger.js";
+import logger from "../utils/logger.util.js";
 import Roles from "../common/enums/user-roles.enum.js";
 
 class AuthMiddleware {
