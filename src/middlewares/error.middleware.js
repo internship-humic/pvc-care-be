@@ -10,20 +10,21 @@ class ErrorMiddleware {
         status: err.errorName,
         message: err.message,
       });
+    } else {
+      logger.error("Unhandled error:", err);
+      return res.status(StatusCode.INTERNAL_SERVER_ERROR.code).json({
+        success: false,
+        status: "Internal Server Error",
+        message: err.message || StatusCode.INTERNAL_SERVER_ERROR.message,
+      });
     }
-    logger.error("Unhandled error:", err);
-    return res.status(StatusCode.INTERNAL_SERVER_ERROR.code).json({
-      success: false,
-      status: "Internal Server Error",
-      message: err.message || StatusCode.INTERNAL_SERVER_ERROR.message,
-    });
   };
 
   errorCatcher = (controller) => async (req, res, next) => {
     try {
       await controller(req, res);
     } catch (err) {
-      logger.error("Error in controller:", err);
+      logger.error(`Error in [${controller.name}]:`, err);
       next(err);
     }
   };
