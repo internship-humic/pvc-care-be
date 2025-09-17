@@ -25,9 +25,10 @@ program
     const controllerTemplate = `
 import BaseError from "../../common/base_classes/base-error.js";
 import BaseResponse from "../../common/base_classes/base-response.js";
+import ${capitalize(name)}Service from "./${name}.service.js";
 
 class ${capitalize(name)}Controller {
-  async someMethod() {
+  async someMethod(req, res) {
     // Implement controller logic here
   }
 }
@@ -57,14 +58,18 @@ import ${capitalize(name)}Controller from "./${name}.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
 import ErrorMiddleware from "../../middlewares/error.middleware.js";
 import validate from '../../middlewares/request-validator.middleware.js';
+import AuthMiddleware from '../../middlewares/auth.middleware.js';
 import { ${name}Schema } from './${name}.schema.js';
 
 class ${capitalize(name)}Routes extends BaseRoutes {
   routes() {
-    this.router.post("/", [
+    this.router.post("/:id", [
+      AuthMiddleware.authenticate,
+      AuthMiddleware.authorize(['FARMER']),
       ErrorMiddleware.errorCatcher(${capitalize(name)}Controller.someMethod)
     ]);
-    this.router.get("/:id", [
+    this.router.post("/", [
+      AuthMiddleware.authenticate,
       validate(${name}Schema), 
       ErrorMiddleware.errorCatcher(${capitalize(name)}Controller.someMethod)
     ]);

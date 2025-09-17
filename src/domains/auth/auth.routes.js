@@ -3,6 +3,7 @@ import BaseRoutes from "../../common/base_classes/base-routes.js";
 import ErrorMiddleware from "../../middlewares/error.middleware.js";
 import validate from "../../middlewares/request-validator.middleware.js";
 import { loginSchema, registerSchema } from "./auth.schema.js";
+import AuthMiddleware from "../../middlewares/auth.middleware.js";
 
 class AuthRoutes extends BaseRoutes {
   routes() {
