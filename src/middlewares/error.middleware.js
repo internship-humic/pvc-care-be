@@ -1,0 +1,32 @@
+import StatusCode from "../common/enums/status-codes.enum.js";
+import BaseError from "../common/base_classes/base-error.js";
+import logger from "../utils/logger.util.js";
+
+class ErrorMiddleware {
+  errorHandler = (err, req, res, next) => {
+    if (err instanceof BaseError) {
+      return res.status(err.errorCode).json({
+        success: false,
+        status: err.errorName,
+        message: err.message,
+      });
+    }
+    logger.error("Unhandled error:", err);
+    return res.status(StatusCode.INTERNAL_SERVER_ERROR.code).json({
+      success: false,
+      status: "Internal Server Error",
+      message: err.message || StatusCode.INTERNAL_SERVER_ERROR.message,
+    });
+  };
+
+  errorCatcher = (controller) => async (req, res, next) => {
+    try {
+      await controller(req, res);
+    } catch (err) {
+      logger.error("Error in controller:", err);
+      next(err);
+    }
+  };
+}
+
+export default new ErrorMiddleware();
