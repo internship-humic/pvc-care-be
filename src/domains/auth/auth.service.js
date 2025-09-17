@@ -19,13 +19,13 @@ class AuthService {
     });
 
     if (!user) {
-      throw new BaseError.notFound("Email not found");
+      throw BaseError.notFound("Email not found");
     }
 
     const isMatch = await matchPassword(password, user.password);
 
     if (!isMatch) {
-      throw new BaseError.unauthorized("Invalid password");
+      throw BaseError.unauthorized("Invalid password");
     }
 
     const accessToken = generateToken({ id: user.id, role: "FARMER" }, "1d");
@@ -45,7 +45,7 @@ class AuthService {
     });
 
     if (user) {
-      throw new BaseError.unprocessable("Email already used by another user");
+      throw BaseError.unprocessable("Email already used by another user");
     }
 
     const newUser = await this.prisma.farmer.create({
