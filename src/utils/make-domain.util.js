@@ -59,13 +59,14 @@ import BaseRoutes from "../../common/base_classes/base-routes.js";
 import ErrorMiddleware from "../../middlewares/error.middleware.js";
 import validate from '../../middlewares/request-validator.middleware.js';
 import AuthMiddleware from '../../middlewares/auth.middleware.js';
+import Roles from "../../common/enums/user-roles.enum.js";
 import { ${name}Schema } from './${name}.schema.js';
 
 class ${capitalize(name)}Routes extends BaseRoutes {
   routes() {
     this.router.post("/:id", [
       AuthMiddleware.authenticate,
-      AuthMiddleware.authorize(['FARMER']),
+      AuthMiddleware.authorize([Roles.Farmer]),
       ErrorMiddleware.errorCatcher(${capitalize(name)}Controller.someMethod)
     ]);
     this.router.post("/", [
