@@ -17,11 +17,11 @@ class BaseError extends Error {
     );
   }
 
-  static badRequest(message = StatusCodes.BAD_GATEWAY.codeName) {
+  static badRequest(message = StatusCodes.BAD_REQUEST.codeName) {
     return new BaseError(
       StatusCodes.BAD_REQUEST.code,
       StatusCodes.BAD_REQUEST.message,
-      StatusCodes.BAD_GATEWAY.codeName,
+      StatusCodes.BAD_REQUEST.codeName,
       message
     );
   }

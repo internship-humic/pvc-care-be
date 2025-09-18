@@ -23,13 +23,19 @@ program
     name = domainParts.at(-1);
 
     const controllerTemplate = `
-import BaseError from "../../common/base_classes/base-error.js";
-import BaseResponse from "../../common/base_classes/base-response.js";
 import ${capitalize(name)}Service from "./${name}.service.js";
+import BaseController from "../../common/base_classes/base-controller.js";
 
-class ${capitalize(name)}Controller {
+class ${capitalize(name)}Controller extends BaseController {
+  constructor() {
+    super(${capitalize(name)}Service);
+    // this.error = BaseError
+    // this.response = BaseResponse
+    // this.service = ${capitalize(name)}Service
+  }
+
   async someMethod(req, res) {
-    // Implement controller logic here
+    // implement method logic here
   }
 }
 
@@ -37,16 +43,17 @@ export default new ${capitalize(name)}Controller();
 `;
 
     const serviceTemplate = `
-import BaseError from "../../common/base_classes/base-error.js";
-import Prisma from "../../common/services/prisma.service.js";
+import BaseService from "../../common/base_classes/base-service.js";
 
-class ${capitalize(name)}Service {
+class ${capitalize(name)}Service extends BaseService {
   constructor() {
-    this.prisma = Prisma;
+    super();
+    // this.error = BaseError
+    // this.db = Prisma
   }
   
   async someMethod() {
-    // Implement service logic here
+    // implement method logic here
   }
 }
 
@@ -56,23 +63,31 @@ export default new ${capitalize(name)}Service();
     const routesTemplate = `
 import ${capitalize(name)}Controller from "./${name}.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
-import ErrorMiddleware from "../../middlewares/error.middleware.js";
-import validate from '../../middlewares/request-validator.middleware.js';
-import AuthMiddleware from '../../middlewares/auth.middleware.js';
-import Roles from "../../common/enums/user-roles.enum.js";
 import { ${name}Schema } from './${name}.schema.js';
 
 class ${capitalize(name)}Routes extends BaseRoutes {
+  constructor() {
+    super(${capitalize(name)}Controller);
+    //this.router = Router();
+    //this.auth = AuthMiddleware;
+    //this.validate = Validate;
+    //this.errCatch = ErrorMiddleware.errorCatcher;
+    //this.controller = controller;
+    //this.roles = Roles;
+    //this.routes();
+  }
+
   routes() {
-    this.router.post("/:id", [
-      AuthMiddleware.authenticate,
-      AuthMiddleware.authorize([Roles.Farmer]),
-      ErrorMiddleware.errorCatcher(${capitalize(name)}Controller.someMethod)
+    this.router.get("/:id", [
+      this.auth.authenticate,
+      this.auth.role([this.roles.Farmer]),
+      this.errCatch(this.controller.someMethod.bind(this.controller))
     ]);
     this.router.post("/", [
-      AuthMiddleware.authenticate,
-      validate(${name}Schema), 
-      ErrorMiddleware.errorCatcher(${capitalize(name)}Controller.someMethod)
+      this.auth.authenticate,
+      this.auth.role([this.roles.Farmer]),
+      this.validate(${name}Schema),
+      this.errCatch(this.controller.someMethod.bind(this.controller))
     ]);
   }
 }

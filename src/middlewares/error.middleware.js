@@ -24,7 +24,7 @@ class ErrorMiddleware {
     try {
       await controller(req, res);
     } catch (err) {
-      logger.error(`Error in [${controller.name}]:`, err);
+      logger.error(`in [${controller.name}]:`, err);
       next(err);
     }
   };

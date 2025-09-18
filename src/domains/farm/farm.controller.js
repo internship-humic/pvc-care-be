@@ -1,10 +1,17 @@
 
-import BaseError from "../../common/base_classes/base-error.js";
-import BaseResponse from "../../common/base_classes/base-response.js";
+import FarmService from "./farm.service.js";
+import BaseController from "../../common/base_classes/base-controller.js";
 
-class FarmController {
-  async someMethod() {
-    // Implement controller logic here
+class FarmController extends BaseController {
+  constructor() {
+    super(FarmService);
+    // this.error = BaseError
+    // this.response = BaseResponse
+    // this.service = FarmService
+  }
+
+  async someMethod(req, res) {
+    // implement method logic here
   }
 }
 

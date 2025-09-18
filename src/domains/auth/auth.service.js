@@ -1,31 +1,30 @@
-import BaseError from "../../common/base_classes/base-error.js";
-import Prisma from "../../common/services/prisma.service.js";
+import BaseService from "../../common/base_classes/base-service.js";
 import {
   generateToken,
   matchPassword,
   hashPassword,
 } from "../../utils/auth.util.js";
 
-class AuthService {
+class AuthService extends BaseService {
   constructor() {
-    this.prisma = Prisma;
+    super();
   }
 
   async login(info) {
     const { email, password } = info;
 
-    const user = await this.prisma.farmer.findUnique({
+    const user = await this.db.farmer.findUnique({
       where: { email },
     });
 
     if (!user) {
-      throw BaseError.notFound("Email not found");
+      throw this.error.notFound("Email not found");
     }
 
     const isMatch = await matchPassword(password, user.password);
 
     if (!isMatch) {
-      throw BaseError.unauthorized("Invalid password");
+      throw this.error.unauthorized("Invalid password");
     }
 
     const accessToken = generateToken({ id: user.id, role: "FARMER" }, "1d");
@@ -40,15 +39,15 @@ class AuthService {
   async register(info) {
     const { name, email, password } = info;
 
-    const user = await this.prisma.farmer.findUnique({
+    const user = await this.db.farmer.findUnique({
       where: { email },
     });
 
     if (user) {
-      throw BaseError.unprocessable("Email already used by another user");
+      throw this.error.unprocessable("Email already used by another user");
     }
 
-    const newUser = await this.prisma.farmer.create({
+    const newUser = await this.db.farmer.create({
       data: {
         name,
         email,

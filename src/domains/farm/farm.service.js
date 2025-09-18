@@ -1,14 +1,15 @@
 
-import BaseError from "../../common/base_classes/base-error.js";
-import Prisma from "../../common/services/prisma.service.js";
+import BaseService from "../../common/base_classes/base-service.js";
 
-class FarmService {
+class FarmService extends BaseService {
   constructor() {
-    this.prisma = Prisma;
+    super();
+    // this.error = BaseError
+    // this.db = Prisma
   }
   
   async someMethod() {
-    // Implement service logic here
+    // implement method logic here
   }
 }
 

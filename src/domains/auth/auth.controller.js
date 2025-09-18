@@ -1,20 +1,23 @@
-import BaseError from "../../common/base_classes/base-error.js";
-import BaseResponse from "../../common/base_classes/base-response.js";
+import BaseController from "../../common/base_classes/base-controller.js";
 import AuthService from "./auth.service.js";
 
-class AuthController {
+class AuthController extends BaseController {
+  constructor() {
+    super(AuthService);
+  }
+
   async login(req, res) {
     const info = req.body;
-    const data = await AuthService.login(info);
+    const data = await this.service.login(info);
 
-    return BaseResponse.success(res, data, "Login Successful");
+    return this.response.success(res, data, "Login Successful");
   }
 
   async register(req, res) {
     const info = req.body;
-    const data = await AuthService.register(info);
+    const data = await this.service.register(info);
 
-    return BaseResponse.created(res, data, "Registration Successful");
+    return this.response.created(res, data, "Registration Successful");
   }
 }
 

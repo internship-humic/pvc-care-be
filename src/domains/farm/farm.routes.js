@@ -1,17 +1,31 @@
+
 import FarmController from "./farm.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
-import ErrorMiddleware from "../../middlewares/error.middleware.js";
-import validate from "../../middlewares/request-validator.middleware.js";
-import { farmSchema } from "./farm.schema.js";
+import { farmSchema } from './farm.schema.js';
 
 class FarmRoutes extends BaseRoutes {
+  constructor() {
+    super(FarmController);
+    //this.router = Router();
+    //this.auth = AuthMiddleware;
+    //this.validate = Validate;
+    //this.errCatch = ErrorMiddleware.errorCatcher;
+    //this.controller = controller;
+    //this.roles = Roles;
+    //this.routes();
+  }
+
   routes() {
-    this.router.post("/", [
-      ErrorMiddleware.errorCatcher(FarmController.someMethod),
-    ]);
     this.router.get("/:id", [
-      validate(farmSchema),
-      ErrorMiddleware.errorCatcher(FarmController.someMethod),
+      this.auth.authenticate,
+      this.auth.role([this.roles.Farmer]),
+      this.errCatch(this.controller.someMethod.bind(this.controller))
+    ]);
+    this.router.post("/", [
+      this.auth.authenticate,
+      this.auth.role([this.roles.Farmer]),
+      this.validate(farmSchema),
+      this.errCatch(this.controller.someMethod.bind(this.controller))
     ]);
   }
 }

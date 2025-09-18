@@ -81,7 +81,7 @@ class AuthMiddleware {
     }
   };
 
-  userRoles = (roles) => {
+  role = (roles) => {
     return (req, res, next) => {
       if (
         !(
