@@ -30,15 +30,17 @@ class AuthMiddleware {
       if (
         !decoded ||
         !decoded.id ||
-        !decoded.type ||
-        (!decoded.role === this.roles.Customer &&
-          !decoded.role === this.roles.Farmer)
+        !decoded.role ||
+        !(
+          decoded.role === this.roles.Customer ||
+          decoded.role === this.roles.Farmer
+        )
       ) {
         logger.warn("Decoded token is invalid or missing required fields");
         return next(BaseError.forbidden("Token Is Invalid Or No Longer Valid"));
       }
 
-      if (decoded.type === this.roles.Farmer) {
+      if (decoded.role === this.roles.Farmer) {
         const farmer = await this.prisma.farmer.findUnique({
           where: { id: decoded.id },
         });
@@ -50,7 +52,7 @@ class AuthMiddleware {
 
         req.user = farmer;
         req.user.role = this.roles.Farmer;
-      } else if (decoded.type === this.roles.Customer) {
+      } else if (decoded.role === this.roles.Customer) {
         const customer = await this.prisma.customer.findUnique({
           where: { id: decoded.id },
         });
@@ -70,7 +72,7 @@ class AuthMiddleware {
       next();
     } catch (err) {
       if (err.message === "invalid signature") {
-        return next(new BaseError.forbidden("Invalid Signature"));
+        return next(BaseError.forbidden("Invalid Signature"));
       } else if (err.message === "invalid token") {
         return next(BaseError.forbidden("Invalid Token"));
       } else if (err.message === "jwt expired") {
@@ -83,16 +85,10 @@ class AuthMiddleware {
 
   role = (roles) => {
     return (req, res, next) => {
-      if (
-        !(
-          Object.values(this.roles).includes(req.user.role) &&
-          roles === req.user.role
-        )
-      ) {
+      if (!roles.includes(req.user.role)) {
         logger.warn(`User role ${req.user.role} does not have access`);
         return next(BaseError.forbidden("Access Denied"));
       }
-      
       next();
     };
   };

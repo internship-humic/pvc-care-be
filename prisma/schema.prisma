@@ -42,5 +42,5 @@ model Farm {
 
   farmer      Farmer   @relation(fields: [farmer_id], references: [id])
 
-  @@map("farm")
+  @@map("farms")
 }

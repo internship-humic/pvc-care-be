@@ -4,6 +4,7 @@ import {
   matchPassword,
   hashPassword,
 } from "../../utils/auth.util.js";
+import Roles from "../../common/enums/user-roles.enum.js";
 
 class AuthService extends BaseService {
   constructor() {
@@ -27,7 +28,7 @@ class AuthService extends BaseService {
       throw this.error.unauthorized("Invalid password");
     }
 
-    const accessToken = generateToken({ id: user.id, role: "FARMER" }, "1d");
+    const accessToken = generateToken({ id: user.id, role: Roles.Farmer });
 
     delete user.password;
 
