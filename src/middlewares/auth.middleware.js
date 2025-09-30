@@ -85,6 +85,11 @@ class AuthMiddleware {
 
   role = (roles) => {
     return (req, res, next) => {
+      if (req.user.role === this.roles.Admin) {
+        logger.info(`Welkam Atmind`);
+        return next();
+      }
+
       if (!roles.includes(req.user.role)) {
         logger.warn(`User role ${req.user.role} does not have access`);
         return next(BaseError.forbidden("Access Denied"));

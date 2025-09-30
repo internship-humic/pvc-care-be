@@ -22,25 +22,35 @@ model Farmer {
   password      String
   address       String?
   phone_number  String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
   farms         Farm[]
 
   @@map("farmers")
 }
 
-model Farm {
-  id          String   @id @default(uuid())
-  farmer_id   String
-  name        String
-  description String
-  pinpoints   Unsupported("geography(Point, 4326)")
-  address     String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+model Admin {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 
-  farmer      Farmer   @relation(fields: [farmer_id], references: [id])
+  @@map("admins")
+}
+
+model Farm {
+  id            String   @id @default(uuid())
+  farmer_id     String
+  name          String
+  description   String
+  pinpoints     Unsupported("geography(Point, 4326)")
+  address       String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  farmer        Farmer   @relation(fields: [farmer_id], references: [id])
 
   @@map("farms")
 }

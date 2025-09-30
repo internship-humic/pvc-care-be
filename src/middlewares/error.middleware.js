@@ -24,7 +24,8 @@ class ErrorMiddleware {
     try {
       await controller(req, res);
     } catch (err) {
-      logger.error(`in [${controller.name}]:`, err);
+      const name = controller.name?.replace(/^bound\s*/, ""); // buat ilangin kata kata "bound" soalnya di controller pake bind biar context thisnya tetap dapet
+      logger.error(`in [${name}]:`, err);
       next(err);
     }
   };
