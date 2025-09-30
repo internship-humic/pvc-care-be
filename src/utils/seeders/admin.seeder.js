@@ -26,7 +26,6 @@ class AdminSeeder extends BaseSeeder {
         email: normalized,
         password: hashed,
       },
-      select: { id: true, email: true, created_at: true, updated_at: true },
     });
 
     this.log.info(`Admin seeded: ${created.email}`);
