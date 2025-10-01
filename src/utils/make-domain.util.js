@@ -23,16 +23,27 @@ program
     fs.ensureDirSync(domainPath);
     name = domainParts.at(-1);
 
+    const className = (name) => {
+      return name
+        .split(/[-_ ]+/)
+        .map((s) => capitalize(s))
+        .join("");
+    };
+
+    const schemaName = (name) => {
+      return name.split(/[-_ ]+/).join("");
+    };
+
     const controllerTemplate = `
-import ${capitalize(name)}Service from "./${name}.service.js";
+import ${className(name)}Service from "./${name}.service.js";
 import BaseController from "../../common/base_classes/base-controller.js";
 
-class ${capitalize(name)}Controller extends BaseController {
+class ${className(name)}Controller extends BaseController {
   constructor() {
-    super(${capitalize(name)}Service);
+    super(${className(name)}Service);
     // this.error = BaseError
     // this.response = BaseResponse
-    // this.service = ${capitalize(name)}Service
+    // this.service = ${className(name)}Service
   }
 
   async someMethod(req, res) {
@@ -40,13 +51,13 @@ class ${capitalize(name)}Controller extends BaseController {
   }
 }
 
-export default new ${capitalize(name)}Controller();
+export default new ${className(name)}Controller();
 `;
 
     const serviceTemplate = `
 import BaseService from "../../common/base_classes/base-service.js";
 
-class ${capitalize(name)}Service extends BaseService {
+class ${className(name)}Service extends BaseService {
   constructor() {
     super();
     // this.error = BaseError
@@ -58,17 +69,17 @@ class ${capitalize(name)}Service extends BaseService {
   }
 }
 
-export default new ${capitalize(name)}Service();
+export default new ${className(name)}Service();
 `;
 
     const routesTemplate = `
-import ${capitalize(name)}Controller from "./${name}.controller.js";
+import ${className(name)}Controller from "./${name}.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
-import { ${name}Schema } from './${name}.schema.js';
+import { ${schemaName(name)}Schema } from './${name}.schema.js';
 
-class ${capitalize(name)}Routes extends BaseRoutes {
+class ${className(name)}Routes extends BaseRoutes {
   constructor() {
-    super(${capitalize(name)}Controller);
+    super(${className(name)}Controller);
     //this.router = Router();
     //this.auth = AuthMiddleware;
     //this.validate = Validate;
@@ -87,23 +98,23 @@ class ${capitalize(name)}Routes extends BaseRoutes {
     this.router.post("/", [
       this.auth.authenticate,
       this.auth.role([this.roles.Farmer]),
-      this.validate(${name}Schema),
+      this.validate(${schemaName(name)}Schema),
       this.errCatch(this.controller.someMethod.bind(this.controller))
     ]);
   }
 }
 
-export default new ${capitalize(name)}Routes().router;
+export default new ${className(name)}Routes().router;
 `;
 
     const schemaTemplate = `
 import Joi from "joi";
 
-const ${name}Schema = Joi.object({
+const ${schemaName(name)}Schema = Joi.object({
   // Define your validation schema here
 });
 
-export { ${name}Schema };
+export { ${schemaName(name)}Schema };
 `;
 
     fs.writeFileSync(
@@ -124,6 +135,7 @@ export { ${name}Schema };
     );
 
     logger.info(`Domain '${name}' created successfully!`);
+    logger.info("Mr.laravelians");
   });
 
 program.parse(process.argv);
