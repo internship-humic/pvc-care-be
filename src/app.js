@@ -30,7 +30,7 @@ class ExpressApplication {
 
     this.app.use(router);
 
-    this.app.use("/*splat", (req, res, next) => {
+    this.app.use("*splat", (req, res, next) => {
       logger.error(`Route not found: ${req.originalUrl}`);
       next(BaseError.notFound("Route not found"));
     });
