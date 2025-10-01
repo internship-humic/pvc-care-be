@@ -2,6 +2,7 @@ import { program } from "commander";
 import fs from "fs-extra";
 import path from "path";
 import capitalize from "capitalize";
+import logger from "./logger.util.js";
 
 const ROOT = process.cwd();
 
@@ -15,7 +16,7 @@ program
     const domainPath = path.join(ROOT, "src", "domains", ...domainParts);
 
     if (fs.existsSync(domainPath)) {
-      console.error(`Domain ${name} already exists!`);
+      logger.error(`Domain ${name} already exists!`);
       process.exit(1);
     }
 
@@ -122,7 +123,7 @@ export { ${name}Schema };
       schemaTemplate
     );
 
-    console.log(`Domain '${name}' created successfully!`);
+    logger.info(`Domain '${name}' created successfully!`);
   });
 
 program.parse(process.argv);

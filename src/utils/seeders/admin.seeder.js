@@ -1,6 +1,5 @@
 import BaseSeeder from "../../common/base_classes/base-seeder.js";
 import { hashPassword } from "../auth.util.js";
-import logger from "../logger.util.js";
 
 class AdminSeeder extends BaseSeeder {
   constructor() {
@@ -16,7 +15,8 @@ class AdminSeeder extends BaseSeeder {
     });
 
     if (exists) {
-      throw new Error(`Admin already exists: ${normalized}`);
+      this.log.warn(`Admin with email ${normalized} already exists.`);
+      process.exit(1);
     }
 
     const hashed = await hashPassword(password);
@@ -33,16 +33,16 @@ class AdminSeeder extends BaseSeeder {
 }
 
 BaseSeeder.run(async function AdminSeed() {
+  const seeder = new AdminSeeder();
   const [, , argEmail, argPassword] = process.argv;
   const email = argEmail; // kayaknya bisa pake env
   const password = argPassword;
 
   if (!email || !password) {
-    logger.warn("Usage: npm run seed:admin <email> <password>");
+    seeder.log.warn("Usage: npm run seed:admin <email> <password>");
     process.exit(1);
   }
 
-  const seeder = new AdminSeeder();
   await seeder.seed(email, password);
 });
 

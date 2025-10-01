@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import logger from "./logger.util.js";
 
 const generateToken = (data, time = process.env.JWT_EXPIRES_IN) => {
   return jwt.sign(data, process.env.JWT_SECRET, {
