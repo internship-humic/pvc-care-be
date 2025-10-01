@@ -5,6 +5,7 @@ import logger from "../utils/logger.util.js";
 class ErrorMiddleware {
   errorHandler = (err, req, res, next) => {
     if (err instanceof BaseError) {
+      logger.error(err.message);
       return res.status(err.errorCode).json({
         success: false,
         status: err.errorName,

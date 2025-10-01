@@ -1,4 +1,3 @@
-
 import Joi from "joi";
 
 const createFarmSchema = Joi.object({
@@ -7,7 +6,20 @@ const createFarmSchema = Joi.object({
   address: Joi.string().required(),
   latitude: Joi.number().min(-90).max(90).required(),
   longitude: Joi.number().min(-180).max(180).required(),
-  farmer_id: Joi.string().uuid().required(),
 });
 
-export { createFarmSchema };
+const updateFarmSchema = Joi.object({
+  name: Joi.string(),
+  description: Joi.string().allow(""),
+  address: Joi.string(),
+  latitude: Joi.number().min(-90).max(90),
+  longitude: Joi.number().min(-180).max(180),
+})
+  .or("name", "description", "address", "latitude", "longitude")
+  .messages({
+    "object.missing":
+      "At least one field must be provided for update from: name, description, address, latitude, longitude (latitude and longitude must be provided together).",
+  })
+  .unknown(false);
+
+export { createFarmSchema, updateFarmSchema };
