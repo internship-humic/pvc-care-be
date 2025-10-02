@@ -14,7 +14,7 @@ const customFormat = winston.format.printf(({ timestamp, level, message }) => {
 
   const indoTime = moment(timestamp)
     .tz("Asia/Jakarta")
-    .format("DD-MM-YYYY hh:mm:ss A");
+    .format("DD-MM-YYYY HH:mm:ss");
   return `[${indoTime}] ${level.toUpperCase()}: ${msg}`;
 });
 
