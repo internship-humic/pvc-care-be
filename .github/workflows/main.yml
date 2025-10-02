@@ -23,7 +23,6 @@ jobs:
           script: |
             cd /home/adam/The-Hack-2025-08-TaniPintar-BE
             git pull origin main
-            npm install is-arrayish@0.3.2  simple-swizzle@0.2.2
             npm install
             npx prisma migrate dev
             pm2 restart TaniPintar
