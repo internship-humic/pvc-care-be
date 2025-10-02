@@ -1,5 +1,6 @@
 import winston from "winston";
 import chalk from "chalk";
+import moment from "moment-timezone";
 
 const customFormat = winston.format.printf(({ timestamp, level, message }) => {
   let msg = message;
@@ -10,15 +11,16 @@ const customFormat = winston.format.printf(({ timestamp, level, message }) => {
   } else if (level === "info") {
     msg = chalk.green(message);
   }
-  return `[${timestamp}] ${level.toUpperCase()}: ${msg}`;
+
+  const indoTime = moment(timestamp)
+    .tz("Asia/Jakarta")
+    .format("DD-MM-YYYY hh:mm:ss A");
+  return `[${indoTime}] ${level.toUpperCase()}: ${msg}`;
 });
 
 const logger = winston.createLogger({
   level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp({ format: "DD-MM-YYYY hh:mm:ss A" }),
-    customFormat
-  ),
+  format: winston.format.combine(winston.format.timestamp(), customFormat),
   transports: [new winston.transports.Console()],
 });
 
