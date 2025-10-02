@@ -15,7 +15,10 @@ const customFormat = winston.format.printf(({ timestamp, level, message }) => {
 
 const logger = winston.createLogger({
   level: "info",
-  format: winston.format.combine(winston.format.timestamp(), customFormat),
+  format: winston.format.combine(
+    winston.format.timestamp({ format: "DD-MM-YYYY hh:mm:ss A" }),
+    customFormat
+  ),
   transports: [new winston.transports.Console()],
 });
 
