@@ -24,7 +24,8 @@ jobs:
           script: |
             cd /home/adam/The-Hack-2025-08-TaniPintar-BE
             git remote set-url origin https://admltfr:${{ secrets.PERSONAL_TOKEN }}@github.com/CCI-The-Hack-2025/The-Hack-2025-08-TaniPintar-BE.git
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
             npm install
             npx prisma migrate dev
             pm2 restart TaniPintar
