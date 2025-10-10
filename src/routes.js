@@ -1,5 +1,6 @@
 import authRoutes from "./domains/auth/auth.routes.js";
 import farmRoutes from "./domains/farm/farm.routes.js";
+import farmProductRoutes from "./domains/farm-product/farm-product.routes.js";
 
 const routes = [
   {
@@ -9,6 +10,10 @@ const routes = [
   {
     path: "/farm",
     route: farmRoutes,
+  },
+  {
+    path: "/farm-product",
+    route: farmProductRoutes,
   },
 ];
 

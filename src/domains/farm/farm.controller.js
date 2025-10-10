@@ -11,7 +11,6 @@ class FarmController extends BaseController {
 
   async getFarmById(req, res) {
     const { id } = req.params;
-    const farmerId = req.user.id;
     const data = await this.service.getFarmById(farmerId, id);
     return this.response.success(res, data, `Farm fetched successfully.`);
   }

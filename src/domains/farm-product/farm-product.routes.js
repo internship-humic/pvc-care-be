@@ -1,10 +1,10 @@
-import FarmController from "./farm.controller.js";
+import FarmProductController from "./farm-product.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
-import { createFarmSchema, updateFarmSchema } from "./farm.schema.js";
+import { createFarmProductSchema, updateFarmProductSchema } from "./farm-product.schema.js";
 
-class FarmRoutes extends BaseRoutes {
+class FarmProductRoutes extends BaseRoutes {
   constructor() {
-    super(FarmController);
+    super(FarmProductController);
     //this.router = Router();
     //this.auth = AuthMiddleware;
     //this.validate = Validate;
@@ -17,30 +17,30 @@ class FarmRoutes extends BaseRoutes {
   routes() {
     this.router.get("/:id", [
       this.auth.authenticate,
-      this.errCatch(this.controller.getFarmById.bind(this.controller)),
+      this.errCatch(this.controller.getFarmProductById.bind(this.controller)),
     ]);
     this.router.get("/", [
       this.auth.authenticate,
-      this.errCatch(this.controller.getAllFarm.bind(this.controller)),
+      this.errCatch(this.controller.getAllFarmProduct.bind(this.controller)),
     ]);
     this.router.post("/", [
       this.auth.authenticate,
       this.auth.role([this.roles.Farmer]),
-      this.validate(createFarmSchema),
-      this.errCatch(this.controller.createFarm.bind(this.controller)),
+      this.validate(createFarmProductSchema),
+      this.errCatch(this.controller.createFarmProduct.bind(this.controller)),
     ]);
     this.router.patch("/:id", [
       this.auth.authenticate,
       this.auth.role([this.roles.Farmer]),
-      this.validate(updateFarmSchema),
-      this.errCatch(this.controller.updateFarm.bind(this.controller)),
+      this.validate(updateFarmProductSchema),
+      this.errCatch(this.controller.updateFarmProduct.bind(this.controller)),
     ]);
     this.router.delete("/:id", [
       this.auth.authenticate,
       this.auth.role([this.roles.Farmer]),
-      this.errCatch(this.controller.deleteFarm.bind(this.controller)),
+      this.errCatch(this.controller.deleteFarmProduct.bind(this.controller)),
     ]);
   }
 }
 
-export default new FarmRoutes().router;
+export default new FarmProductRoutes().router;

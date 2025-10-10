@@ -5,52 +5,118 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
   extensions = [postgis]
 }
 
 model Farmer {
-  id            String   @id @default(uuid())
-  name          String
-  email         String   @unique
-  password      String
-  address       String?
-  phone_number  String?
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  email        String   @unique
+  password     String
+  address      String?
+  phone_number String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
-  farms         Farm[]
+  farms Farm[]
 
   @@map("farmers")
 }
 
 model Admin {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  password      String
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   @@map("admins")
 }
 
 model Farm {
-  id            String   @id @default(uuid())
-  farmer_id     String
-  name          String
-  description   String
-  pinpoints     Unsupported("geography(Point, 4326)")
-  address       String
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  id          String                                @id @default(uuid())
+  farmer_id   String
+  name        String
+  description String
+  pinpoints   Unsupported("geography(Point, 4326)")
+  address     String
+  created_at  DateTime                              @default(now())
+  updated_at  DateTime                              @updatedAt
 
-  farmer        Farmer   @relation(fields: [farmer_id], references: [id])
+  farmer        Farmer        @relation(fields: [farmer_id], references: [id])
+  farm_products FarmProduct[]
 
   @@map("farms")
+}
+
+model Plant {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  farm_products FarmProduct[]
+
+  @@map("plants")
+}
+
+model FarmProduct {
+  id           String   @id @default(uuid())
+  farm_id      String
+  plant_id     String
+  harvested_id String
+  planted_id   String
+  sale_id      String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  farm      Farm?      @relation(fields: [farm_id], references: [id])
+  plant     Plant      @relation(fields: [plant_id], references: [id])
+  harvested Harvested? @relation(fields: [harvested_id], references: [id])
+  planted   Planted?   @relation(fields: [planted_id], references: [id])
+  sale      Sale?      @relation(fields: [sale_id], references: [id])
+
+  @@map("farm_products")
+}
+
+model Harvested {
+  id         String   @id @default(uuid())
+  quantity   Float    @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  farm_products FarmProduct[]
+
+  @@map("harvested")
+}
+
+model Planted {
+  id         String   @id @default(uuid())
+  quantity   Float    @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  farm_products FarmProduct[]
+
+  @@map("planted")
+}
+
+model Sale {
+  id         String   @id @default(uuid())
+  quantity   Float    @default(0)
+  price      Float    @default(0)
+  status     Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  farm_products FarmProduct[]
+
+  @@map("sales")
 }
