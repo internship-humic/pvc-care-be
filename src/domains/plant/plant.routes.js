@@ -1,0 +1,29 @@
+import PlantController from "./plant.controller.js";
+import BaseRoutes from "../../common/base_classes/base-routes.js";
+import { plantSchema } from './plant.schema.js';
+
+class PlantRoutes extends BaseRoutes {
+  constructor() {
+    super(PlantController);
+    //this.router = Router();
+    //this.auth = AuthMiddleware;
+    //this.validate = Validate;
+    //this.errCatch = ErrorMiddleware.errorCatcher;
+    //this.controller = controller;
+    //this.roles = Roles;
+    //this.routes();
+  }
+
+  routes() {
+    this.router.get("/:id", [
+      this.auth.authenticate,
+      this.errCatch(this.controller.getPlantById.bind(this.controller)),
+    ]);
+    this.router.get("/", [
+      this.auth.authenticate,
+      this.errCatch(this.controller.getAllPlant.bind(this.controller)),
+    ]);
+  }
+}
+
+export default new PlantRoutes().router;
