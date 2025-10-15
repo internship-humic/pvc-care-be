@@ -25,8 +25,16 @@ class FarmProductService extends BaseService {
     return data;
   }
 
-  async createFarmProduct(info) {
+  async createFarmProduct(info, farmer_id) {
     const { farm_id, plant_id } = info;
+
+    const is_exist = await this.db.farm.findFirst({
+      where: { id: info.farm_id, farmer_id }
+    });
+
+    if (!is_exist) {
+      throw this.error.notFound("Farm not found or you do not own this farm");
+    }
 
     const { id: planted_id } = await this.db.planted.create({ data: {} });
     const { id: harvested_id } = await this.db.harvested.create({ data: {} });
@@ -44,9 +52,25 @@ class FarmProductService extends BaseService {
     return created;
   }
 
-  async updateFarmProduct(id, info) {
+  async updateFarmProduct(id, info, farmerId) {
     const ALLOWED = ["plant_id"];
     const data = {};
+
+    const is_exist = await this.db.farmProduct.findUnique({
+      where: { id }
+    })
+
+    if (!is_exist) {
+      throw this.error.notFound("Farm product not found");
+    }
+
+    const is_owned = await this.db.farm.findUnique({
+      where: { id: is_exist.farm_id, farmer_id: farmerId }
+    })
+
+    if (!is_owned) {
+      throw this.error.forbidden("You do not own this farm product");
+    }
 
     for (const key of ALLOWED) {
       if (info[key] !== undefined) {
@@ -70,11 +94,44 @@ class FarmProductService extends BaseService {
     return updated;
   }
 
-  async deleteFarmProduct(id) {
-    const deleted = await this.db.farmProduct.delete({
-      where: { id },
-    });
-    return deleted;
+  async deleteFarmProduct(id, info, farmerId) {
+    const is_exist = await this.db.farmProduct.findUnique({
+      where: { id }
+    })
+
+    if (!is_exist) {
+      throw this.error.notFound("Farm product not found");
+    }
+
+    const is_owned = await this.db.farm.findUnique({
+      where: { id: is_exist.farm_id, farmer_id: farmerId }
+    })
+
+    if (!is_owned) {
+      throw this.error.forbidden("You do not own this farm product");
+    }
+
+    return await this.db.$transaction(async (tx) => {
+      const deleted = await tx.farmProduct.findUnique({
+        where: { id },
+      });
+      
+      await tx.farmProduct.delete({
+        where: { id },
+      });
+
+      await tx.harvested.delete({
+        where: { id: deleted.harvested_id },
+			});
+      await tx.planted.delete({
+        where: { id: deleted.planted_id },
+      });
+      await tx.sale.delete({
+        where: { id: deleted.sale_id },
+      });
+
+			return deleted;
+		});
   }
 }
 
