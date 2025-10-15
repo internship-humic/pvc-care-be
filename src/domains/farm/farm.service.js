@@ -7,7 +7,7 @@ class FarmService extends BaseService {
     // this.db = Prisma
   }
 
-  async getFarmById(farmer_id, id) {
+  async getFarmById(id) {
     const data = await this.db.$queryRaw`
         SELECT 
           id, 
@@ -20,7 +20,7 @@ class FarmService extends BaseService {
           created_at, 
           updated_at
         FROM farms
-        WHERE farmer_id = ${farmer_id} AND id = ${id};
+        WHERE id = ${id};
       `;
 
     if (data.length === 0) {
@@ -77,14 +77,14 @@ class FarmService extends BaseService {
           id, 
           farmer_id, 
           name, 
-          description
+          description,
           address,
           ST_Y(pinpoints::geometry) AS latitude,
           ST_X(pinpoints::geometry) AS longitude,
           created_at, 
           updated_at;
       `;
-    return created;
+    return created[0];
   }
 
   async updateFarm(farmer_id, id, info) {
@@ -105,7 +105,7 @@ class FarmService extends BaseService {
               info["longitude"]
             )}, ${Number(info["latitude"])}),4326),
             updated_at = NOW()
-            WHERE id = '${id}' AND farmer_id = '${farmer_id}'
+            WHERE id = ${id} AND farmer_id = ${farmer_id}
           `;
       } else if (
         (info["latitude"] === undefined && info["longitude"] !== undefined) ||
@@ -144,7 +144,7 @@ class FarmService extends BaseService {
     WHERE id = ${id} AND farmer_id = ${farmer_id}
   `;
 
-    return updated;
+    return updated[0];
   }
 
   async deleteFarm(farmer_id, id) {
@@ -162,6 +162,10 @@ class FarmService extends BaseService {
         created_at,
         updated_at;
     `;
+
+    if (deleted.length === 0) {
+      throw this.error.notFound("Farm not found or you are not the owner.");
+    }
     return deleted;
   }
 }
