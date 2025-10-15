@@ -16,8 +16,24 @@ class FarmController extends BaseController {
   }
 
   async getAllFarm(req, res) {
-    const data = await this.service.getAllFarm();
-    return this.response.success(res, data, `Farms fetched successfully.`);
+    const query = req.query;
+    const data = await this.service.getAllFarm(query);
+    return this.response.success(
+      res,
+      data.data,
+      `Farms fetched successfully.`,
+      data.meta
+    );
+  }
+
+  async getNearestFarm(req, res) {
+    const info = req.body;
+    const data = await this.service.getNearestFarm(info);
+    return this.response.success(
+      res,
+      data,
+      "Nearest farms fetched successfully."
+    );
   }
 
   async createFarm(req, res) {

@@ -1,6 +1,10 @@
 import FarmController from "./farm.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
-import { createFarmSchema, updateFarmSchema } from "./farm.schema.js";
+import {
+  createFarmSchema,
+  nearestFarmSchema,
+  updateFarmSchema,
+} from "./farm.schema.js";
 
 class FarmRoutes extends BaseRoutes {
   constructor() {
@@ -17,11 +21,19 @@ class FarmRoutes extends BaseRoutes {
   routes() {
     this.router.get("/:id", [
       this.auth.authenticate,
+      this.auth.role([this.roles.Farmer, this.roles.Customer]),
       this.errCatch(this.controller.getFarmById.bind(this.controller)),
     ]);
     this.router.get("/", [
       this.auth.authenticate,
+      this.auth.role([this.roles.Farmer, this.roles.Customer]),
       this.errCatch(this.controller.getAllFarm.bind(this.controller)),
+    ]);
+    this.router.post("/nearest", [
+      this.auth.authenticate,
+      this.auth.role([this.roles.Farmer, this.roles.Customer]),
+      this.validate(nearestFarmSchema),
+      this.errCatch(this.controller.getNearestFarm.bind(this.controller)),
     ]);
     this.router.post("/", [
       this.auth.authenticate,

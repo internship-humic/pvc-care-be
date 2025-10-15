@@ -1,8 +1,7 @@
-
 import Joi from "joi";
 
-const plantSchema = Joi.object({
-  // Define your validation schema here
+const createPlantSchema = Joi.object({
+  name: Joi.string().required(),
 });
 
-export { plantSchema };
+export { createPlantSchema };

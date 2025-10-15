@@ -19,6 +19,12 @@ class PlantController extends BaseController {
     const data = await this.service.getAllPlant();
     return this.response.success(res, data, `Plants fetched successfully.`);
   }
+
+  async createPlant(req, res) {
+    const info = req.body;
+    const data = await this.service.createPlant(info);
+    return this.response.created(res, data, "Plant created successfully.");
+  }
 }
 
 export default new PlantController();

@@ -10,7 +10,7 @@ class PlantService extends BaseService {
   async getPlantById(id) {
     const data = await this.db.plant.findUnique({
       where: { id },
-    })
+    });
 
     if (!data) {
       throw this.error.notFound("Plant not found");
@@ -23,6 +23,14 @@ class PlantService extends BaseService {
     const data = await this.db.plant.findMany();
 
     return data;
+  }
+
+  async createPlant(info) {
+    const { name } = info;
+    const created = await this.db.plant.create({
+      data: { name: name },
+    });
+    return created;
   }
 }
 
