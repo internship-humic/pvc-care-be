@@ -68,55 +68,55 @@ model Plant {
 }
 
 model FarmProduct {
-  id           String   @id @default(uuid())
-  farm_id      String
-  plant_id     String
-  harvested_id String
-  planted_id   String
-  sale_id      String
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  farm_id    String
+  plant_id   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
-  farm      Farm?      @relation(fields: [farm_id], references: [id])
-  plant     Plant      @relation(fields: [plant_id], references: [id])
-  harvested Harvested? @relation(fields: [harvested_id], references: [id])
-  planted   Planted?   @relation(fields: [planted_id], references: [id])
-  sale      Sale?      @relation(fields: [sale_id], references: [id])
+  farm      Farm        @relation(fields: [farm_id], references: [id], onDelete: Cascade)
+  plant     Plant       @relation(fields: [plant_id], references: [id])
+  harvested Harvested[]
+  planted   Planted[]
+  sale      Sale[]
 
   @@map("farm_products")
 }
 
 model Harvested {
-  id         String   @id @default(uuid())
-  quantity   Float    @default(0)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id              String   @id @default(uuid())
+  farm_product_id String
+  quantity        Float    @default(0)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
-  farm_products FarmProduct[]
+  farm_product FarmProduct @relation(fields: [farm_product_id], references: [id], onDelete: Cascade)
 
   @@map("harvested")
 }
 
 model Planted {
-  id         String   @id @default(uuid())
-  quantity   Float    @default(0)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id              String   @id @default(uuid())
+  farm_product_id String
+  quantity        Float    @default(0)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
-  farm_products FarmProduct[]
+  farm_product FarmProduct @relation(fields: [farm_product_id], references: [id], onDelete: Cascade)
 
   @@map("planted")
 }
 
 model Sale {
-  id         String   @id @default(uuid())
-  quantity   Float    @default(0)
-  price      Float    @default(0)
-  status     Boolean  @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id              String   @id @default(uuid())
+  farm_product_id String
+  quantity        Float    @default(0)
+  price           Float    @default(0)
+  status          Boolean  @default(false)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
 
-  farm_products FarmProduct[]
+  farm_product FarmProduct @relation(fields: [farm_product_id], references: [id], onDelete: Cascade)
 
   @@map("sales")
 }
