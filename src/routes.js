@@ -2,6 +2,7 @@ import authRoutes from "./domains/auth/auth.routes.js";
 import farmRoutes from "./domains/farm/farm.routes.js";
 import farmProductRoutes from "./domains/farm-product/farm-product.routes.js";
 import plantRoutes from "./domains/plant/plant.routes.js";
+import harvestedRoutes from "./domains/farm-product/harvested/harvested.routes.js";
 
 const routes = [
   {
@@ -19,6 +20,10 @@ const routes = [
   {
     path: "/plant",
     route: plantRoutes,
+  },
+  {
+    path: "/harvested",
+    route: harvestedRoutes,
   },
 ];
 

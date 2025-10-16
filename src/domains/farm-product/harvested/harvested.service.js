@@ -1,5 +1,4 @@
-
-import BaseService from "../../common/base_classes/base-service.js";
+import BaseService from "../../../common/base_classes/base-service.js";
 
 class HarvestedService extends BaseService {
   constructor() {
@@ -20,9 +19,35 @@ class HarvestedService extends BaseService {
     return data;
   }
 
-  async updateHarvested(id, info) {
+  async getAllHarvested() {
+    const data = await this.db.harvested.findMany();
+
+    return data;
+  }
+
+  async updateHarvested(id, info, farmer_id) {
     const ALLOWED = ["quantity"];
     const data = {};
+
+    const is_exist = await this.db.harvested.findUnique({
+      where: { id }
+    })
+
+    if (!is_exist) {
+      throw this.error.notFound("Harvested product not found");
+    }
+
+    const farmProduct = await this.db.farmProduct.findUnique({
+      where: { id: is_exist.farm_product_id }
+    });
+
+    const is_owned = await this.db.farm.findUnique({
+      where: { id: farmProduct.farm_id, farmer_id }
+    })
+
+    if (!is_owned) {
+      throw this.error.forbidden("You do not own this farm product");
+    }
 
     for (const key of ALLOWED) {
       if (info[key] !== undefined) {

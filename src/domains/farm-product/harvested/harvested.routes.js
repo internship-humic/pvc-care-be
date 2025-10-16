@@ -20,6 +20,10 @@ class HarvestedRoutes extends BaseRoutes {
       this.auth.authenticate,
       this.errCatch(this.controller.getHarvestedById.bind(this.controller)),
     ]);
+    this.router.get("/", [
+      this.auth.authenticate,
+      this.errCatch(this.controller.getAllHarvested.bind(this.controller)),
+    ]);
     this.router.patch("/:id", [
       this.auth.authenticate,
       this.auth.role([this.roles.Farmer]),
