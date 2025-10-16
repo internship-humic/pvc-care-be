@@ -22,24 +22,23 @@ class FarmProductController extends BaseController {
 
   async createFarmProduct(req, res) {
     const info = req.body;
-    const farmerId = req.user.id;
-    const data = await this.service.createFarmProduct(info, farmerId);
+    const farmer_id = req.user.id;
+    const data = await this.service.createFarmProduct(info, farmer_id);
     return this.response.created(res, data, "Farm product created successfully.");
   }
 
   async updateFarmProduct(req, res) {
     const info = req.body;
     const { id } = req.params;
-    const farmerId = req.user.id;
-    const data = await this.service.updateFarmProduct(id, info, farmerId);
+    const farmer_id = req.user.id;
+    const data = await this.service.updateFarmProduct(id, info, farmer_id);
     return this.response.success(res, data, "Farm product updated successfully.");
   }
 
   async deleteFarmProduct(req, res) {
-    const info = req.body;
     const { id } = req.params;
-    const farmerId = req.user.id;
-    const data = await this.service.deleteFarmProduct(id, info, farmerId);
+    const farmer_id = req.user.id;
+    const data = await this.service.deleteFarmProduct(id, farmer_id);
     return this.response.success(res, data, "Farm product deleted successfully.");
   }
 }

@@ -15,10 +15,16 @@ class HarvestedController extends BaseController {
     return this.response.success(res, data, `Harvested fetched successfully.`);
   }
 
+  async getAllHarvested(req, res) {
+    const data = await this.service.getAllHarvested();
+    return this.response.success(res, data, `Harvested fetched successfully.`);
+  }
+
   async updateHarvested(req, res) {
     const info = req.body;
     const { id } = req.params;
-    const data = await this.service.updateHarvested(id, info);
+    const farmer_id = req.user.id;
+    const data = await this.service.updateHarvested(id, info, farmer_id);
     return this.response.success(res, data, "Harvested updated successfully.");
   }
 }

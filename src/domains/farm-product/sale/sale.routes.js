@@ -1,11 +1,10 @@
-
-import HarvestedController from "./harvested.controller.js";
+import SaleController from "./sale.controller.js";
 import BaseRoutes from "../../../common/base_classes/base-routes.js";
-import { updateHarvestedSchema } from './harvested.schema.js';
+import { updateSaleSchema } from './sale.schema.js';
 
-class HarvestedRoutes extends BaseRoutes {
+class SaleRoutes extends BaseRoutes {
   constructor() {
-    super(HarvestedController);
+    super(SaleController);
     //this.router = Router();
     //this.auth = AuthMiddleware;
     //this.validate = Validate;
@@ -18,19 +17,19 @@ class HarvestedRoutes extends BaseRoutes {
   routes() {
     this.router.get("/:id", [
       this.auth.authenticate,
-      this.errCatch(this.controller.getHarvestedById.bind(this.controller)),
+      this.errCatch(this.controller.getSaleById.bind(this.controller)),
     ]);
     this.router.get("/", [
       this.auth.authenticate,
-      this.errCatch(this.controller.getAllHarvested.bind(this.controller)),
+      this.errCatch(this.controller.getAllSale.bind(this.controller)),
     ]);
     this.router.patch("/:id", [
       this.auth.authenticate,
       this.auth.role([this.roles.Farmer]),
-      this.validate(updateHarvestedSchema),
-      this.errCatch(this.controller.updateHarvested.bind(this.controller)),
+      this.validate(updateSaleSchema),
+      this.errCatch(this.controller.updateSale.bind(this.controller)),
     ]);
   }
 }
 
-export default new HarvestedRoutes().router;
+export default new SaleRoutes().router;
