@@ -10,7 +10,7 @@ class FarmProductService extends BaseService {
   async getFarmProductById(id) {
     const data = await this.db.farmProduct.findUnique({
       where: { id },
-    })
+    });
 
     if (!data) {
       throw this.error.notFound("Farm product not found");

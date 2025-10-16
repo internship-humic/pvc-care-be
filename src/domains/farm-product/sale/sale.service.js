@@ -1,40 +1,40 @@
 import BaseService from "../../../common/base_classes/base-service.js";
 
-class HarvestedService extends BaseService {
+class SaleService extends BaseService {
   constructor() {
     super();
     // this.error = BaseError
     // this.db = Prisma
   }
 
-  async getHarvestedById(id) {
-    const data = await this.db.harvested.findUnique({
+  async getSaleById(id) {
+    const data = await this.db.sale.findUnique({
       where: { id },
     });
 
     if (!data) {
-      throw this.error.notFound("Harvested product not found");
+      throw this.error.notFound("Sale product not found");
     }
 
     return data;
   }
 
-  async getAllHarvested() {
-    const data = await this.db.harvested.findMany();
+  async getAllSale() {
+    const data = await this.db.sale.findMany();
 
     return data;
   }
 
-  async updateHarvested(id, info, farmer_id) {
-    const ALLOWED = ["quantity"];
+  async updateSale(id, info, farmer_id) {
+    const ALLOWED = ["quantity", "price", "status"];
     const data = {};
 
-    const is_exist = await this.db.harvested.findUnique({
+    const is_exist = await this.db.sale.findUnique({
       where: { id }
     })
 
     if (!is_exist) {
-      throw this.error.notFound("Harvested product not found");
+      throw this.error.notFound("Sale product not found");
     }
 
     const farmProduct = await this.db.farmProduct.findUnique({
@@ -56,7 +56,7 @@ class HarvestedService extends BaseService {
     }
 
     if (Object.keys(data).length > 0) {
-      await this.db.harvested.update({
+      await this.db.sale.update({
         where: { id },
         data: { ...data },
       });
@@ -64,7 +64,7 @@ class HarvestedService extends BaseService {
       throw this.error.badRequest("No valid fields to update");
     }
 
-    const updated = await this.db.harvested.findUnique({
+    const updated = await this.db.sale.findUnique({
       where: { id },
     });
 
@@ -72,4 +72,4 @@ class HarvestedService extends BaseService {
   }
 }
 
-export default new HarvestedService();
+export default new SaleService();

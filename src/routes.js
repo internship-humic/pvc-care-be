@@ -3,6 +3,8 @@ import farmRoutes from "./domains/farm/farm.routes.js";
 import farmProductRoutes from "./domains/farm-product/farm-product.routes.js";
 import plantRoutes from "./domains/plant/plant.routes.js";
 import harvestedRoutes from "./domains/farm-product/harvested/harvested.routes.js";
+import plantedRoutes from "./domains/farm-product/planted/planted.routes.js";
+import saleRoutes from "./domains/farm-product/sale/sale.routes.js";
 
 const routes = [
   {
@@ -25,6 +27,14 @@ const routes = [
     path: "/harvested",
     route: harvestedRoutes,
   },
+  {
+    path: "/planted",
+    route: plantedRoutes,
+  },
+  {
+    path: "/sale",
+    route: saleRoutes,
+  }
 ];
 
 export default routes;
