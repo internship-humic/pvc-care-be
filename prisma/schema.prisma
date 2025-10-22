@@ -22,6 +22,7 @@ model Farmer {
   password     String
   address      String?
   phone_number String?
+  image_url    String?
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 
@@ -37,6 +38,7 @@ model Customer {
   password     String
   address      String?
   phone_number String?
+  image_url    String?
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
 

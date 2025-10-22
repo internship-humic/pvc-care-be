@@ -1,6 +1,7 @@
 import ProfileController from "./profile.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
-import { updateProfileSchema } from './profile.schema.js';
+import { updateProfileSchema } from "./profile.schema.js";
+import upload from "../../utils/image.util.js";
 
 class ProfileRoutes extends BaseRoutes {
   constructor() {
@@ -23,6 +24,11 @@ class ProfileRoutes extends BaseRoutes {
       this.auth.authenticate,
       this.validate(updateProfileSchema),
       this.errCatch(this.controller.updateProfile.bind(this.controller)),
+    ]);
+    this.router.patch("/picture", [
+      this.auth.authenticate,
+      upload.single("image"),
+      this.errCatch(this.controller.updateProfilePicture.bind(this.controller)),
     ]);
   }
 }

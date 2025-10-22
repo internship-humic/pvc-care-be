@@ -1,5 +1,8 @@
 import BaseService from "../../common/base_classes/base-service.js";
 import { hashPassword } from "../../utils/auth.util.js";
+import fs from "fs";
+import logger from "../../utils/logger.util.js";
+import path from "path";
 
 class ProfileService extends BaseService {
   constructor() {
@@ -9,21 +12,17 @@ class ProfileService extends BaseService {
   }
 
   async getProfile(user_id, role) {
+    let data;
     if (role === "FARMER") {
-      const data = await this.db.farmer.findUnique({
-        where: { id: user_id }
+      data = await this.db.farmer.findUnique({
+        where: { id: user_id },
       });
-      
-      return data;
     } else if (role === "CUSTOMER") {
-      const data = await this.db.customer.findUnique({
-        where: { id: user_id }
+      data = await this.db.customer.findUnique({
+        where: { id: user_id },
       });
-
-      return data;
-    } else {
-      throw this.error.badRequest("Invalid role");
     }
+    return data;
   }
 
   async updateProfile(info, user_id, role) {
@@ -63,6 +62,7 @@ class ProfileService extends BaseService {
         updated = await this.db.customer.findFirst({
           where: { id: user_id },
         });
+        delete updated.password;
 
         return updated;
       }
@@ -70,6 +70,61 @@ class ProfileService extends BaseService {
       throw this.error.badRequest("No valid fields to update");
     }
   }
+
+  async updateProfilePicture(image_path, user_id, role) {
+    let updated;
+    if (role == "FARMER") {
+      const previousImage = await this.db.farmer.findUnique({
+        where: { id: user_id },
+        select: { image_url: true },
+      });
+
+      if (previousImage.image_url !== null) {
+        previousImageDelete(previousImage.image_url);
+      }
+
+      await this.db.farmer.update({
+        where: { id: user_id },
+        data: { image_url: image_path },
+      });
+      updated = await this.db.farmer.findFirst({
+        where: { id: user_id },
+      });
+    } else if (role == "CUSTOMER") {
+      const previousImage = await this.db.customer.findUnique({
+        where: { id: user_id },
+        select: { image_url: true },
+      });
+
+      if (previousImage.image_url !== null) {
+        previousImageDelete(previousImage.image_url);
+      }
+
+      await this.db.customer.update({
+        where: { id: user_id },
+        data: { image_url: image_path },
+      });
+      updated = await this.db.customer.findFirst({
+        where: { id: user_id },
+      });
+    }
+
+    delete updated.password;
+
+    return updated;
+  }
+}
+
+function previousImageDelete(filePath) {
+  if (!filePath) return;
+  const fullPath = path.join(process.cwd(), "public", filePath);
+  fs.unlink(fullPath, (err) => {
+    if (err) {
+      logger.error("Error deleting file:", err);
+    } else {
+      logger.info(`${filePath} was deleted successfully.`);
+    }
+  });
 }
 
 export default new ProfileService();

@@ -23,6 +23,22 @@ class ProfileController extends BaseController {
     const data = await this.service.updateProfile(info, user_id, role);
     return this.response.success(res, data, "Profile updated successfully.");
   }
+
+  async updateProfilePicture(req, res) {
+    const image_path = `/uploads/${req.file.filename}`;
+    const user_id = req.user.id;
+    const role = req.user.role;
+    const data = await this.service.updateProfilePicture(
+      image_path,
+      user_id,
+      role
+    );
+    return this.response.success(
+      res,
+      data,
+      "Profile picture updated successfully."
+    );
+  }
 }
 
 export default new ProfileController();
