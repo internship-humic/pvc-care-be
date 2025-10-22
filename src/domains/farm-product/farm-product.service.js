@@ -11,7 +11,7 @@ class FarmProductService extends BaseService {
 
   async getFarmProductById(id) {
     const data = await this.db.farmProduct.findUnique({
-      where: { id },
+      where: { id, include: { farm: true, plant: true } },
     });
 
     if (!data) {
@@ -28,6 +28,7 @@ class FarmProductService extends BaseService {
 
     const data = await this.db.farmProduct.findMany({
       where: filter,
+      include: { farm: true, plant: true },
       skip: offset,
       take: limit,
       orderBy: { created_at: "desc" },
