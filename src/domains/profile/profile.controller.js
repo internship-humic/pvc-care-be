@@ -25,7 +25,7 @@ class ProfileController extends BaseController {
   }
 
   async updateProfilePicture(req, res) {
-    const image_path = `/uploads/${req.file.filename}`;
+    const image_path = `/images/${req.file.filename}`;
     const user_id = req.user.id;
     const role = req.user.role;
     const data = await this.service.updateProfilePicture(
