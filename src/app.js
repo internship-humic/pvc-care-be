@@ -5,6 +5,7 @@ import errorMiddleware from "./middlewares/error.middleware.js";
 import routes from "./routes.js";
 import BaseError from "./common/base_classes/base-error.js";
 import logger from "./utils/logger.util.js";
+import path from "path";
 
 class ExpressApplication {
   constructor(port) {
