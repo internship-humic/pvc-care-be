@@ -17,16 +17,18 @@ class ExpressApplication {
   }
 
   setupMiddleware() {
-    this.app.use(
-      "/uploads",
-      express.static(path.join(process.cwd(), "public", "uploads"))
-    );
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
     this.app.use(morgan("tiny"));
   }
 
   setupRoutes(routes) {
+    // route untuk mengakses gambar di folder upload
+    this.app.use(
+      "/images",
+      express.static(path.join(process.cwd(), "public", "uploads"))
+    );
+
     const router = express.Router();
 
     routes.forEach((route) => {
