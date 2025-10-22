@@ -26,7 +26,7 @@ class ExpressApplication {
     // route untuk mengakses gambar di folder upload
     this.app.use(
       "/images",
-      express.static(path.join(process.cwd(), "public", "uploads"))
+      express.static(path.join(process.cwd(), "public", "images"))
     );
 
     const router = express.Router();
