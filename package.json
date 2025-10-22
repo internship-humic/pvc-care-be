@@ -15,7 +15,7 @@
     "seed:plant": "node src/utils/seeders/plant.seeder.js"
   },
   "dependencies": {
-    "@prisma/client": "^6.11.0",
+    "@prisma/client": "^6.17.1",
     "bcryptjs": "^3.0.2",
     "capitalize": "^2.0.4",
     "chalk": "^5.6.2",

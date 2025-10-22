@@ -29,7 +29,7 @@ class FarmProductService extends BaseService {
     const { farm_id, plant_id } = info;
 
     const is_exist = await this.db.farm.findUnique({
-      where: { id: info.farm_id, farmer_id }
+      where: { id: farm_id, farmer_id },
     });
 
     if (!is_exist) {
@@ -37,16 +37,30 @@ class FarmProductService extends BaseService {
     }
 
     return await this.db.$transaction(async (tx) => {
-      const created = await this.db.farmProduct.create({
+      const created = await tx.farmProduct.create({
         data: {
-          farm_id,
-          plant_id,
+          farm_id: farm_id,
+          plant_id: plant_id,
         },
       });
 
-      await this.db.planted.create({ data: { farm_product_id: created.id } });
-      await this.db.harvested.create({ data: { farm_product_id: created.id } });
-      await this.db.sale.create({ data: { farm_product_id: created.id } });
+      await tx.planted.create({
+        data: {
+          farm_product_id: created.id,
+        },
+      });
+
+      await tx.harvested.create({
+        data: {
+          farm_product_id: created.id,
+        },
+      });
+
+      await tx.sale.create({
+        data: {
+          farm_product_id: created.id,
+        },
+      });
 
       return created;
     });
@@ -57,16 +71,16 @@ class FarmProductService extends BaseService {
     const data = {};
 
     const is_exist = await this.db.farmProduct.findUnique({
-      where: { id }
-    })
+      where: { id },
+    });
 
     if (!is_exist) {
       throw this.error.notFound("Farm product not found");
     }
 
     const is_owned = await this.db.farm.findUnique({
-      where: { id: is_exist.farm_id, farmer_id }
-    })
+      where: { id: is_exist.farm_id, farmer_id },
+    });
 
     if (!is_owned) {
       throw this.error.forbidden("You do not own this farm product");
@@ -96,23 +110,23 @@ class FarmProductService extends BaseService {
 
   async deleteFarmProduct(id, farmer_id) {
     const is_exist = await this.db.farmProduct.findUnique({
-      where: { id }
-    })
+      where: { id },
+    });
 
     if (!is_exist) {
       throw this.error.notFound("Farm product not found");
     }
 
     const is_owned = await this.db.farm.findUnique({
-      where: { id: is_exist.farm_id, farmer_id }
-    })
+      where: { id: is_exist.farm_id, farmer_id },
+    });
 
     if (!is_owned) {
       throw this.error.forbidden("You do not own this farm product");
     }
 
     const deleted = await this.db.farmProduct.delete({
-      where: { id }
+      where: { id },
     });
 
     return deleted;
