@@ -1,4 +1,10 @@
 import BaseService from "../../common/base_classes/base-service.js";
+import {
+  generateToken,
+  matchPassword,
+  hashPassword,
+} from "../../utils/auth.util.js";
+import Roles from "../../common/enums/user-roles.enum.js";
 
 class FarmerAuthService extends BaseService {
   constructor() {
@@ -36,11 +42,15 @@ class FarmerAuthService extends BaseService {
   async register(info) {
     const { name, email, password } = info;
 
-    const user = await this.db.farmer.findUnique({
+    const farmer = await this.db.farmer.findUnique({
       where: { email },
     });
 
-    if (user) {
+    const customer = await this.db.customer.findUnique({
+      where: { email },
+    });
+
+    if (farmer || customer) {
       throw this.error.unprocessable("Email already used by another user");
     }
 

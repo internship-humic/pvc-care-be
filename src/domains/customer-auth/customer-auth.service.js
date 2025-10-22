@@ -42,11 +42,15 @@ class CustomerAuthService extends BaseService {
   async register(info) {
     const { name, email, password } = info;
 
-    const user = await this.db.customer.findUnique({
+    const farmer = await this.db.farmer.findUnique({
       where: { email },
     });
 
-    if (user) {
+    const customer = await this.db.customer.findUnique({
+      where: { email },
+    });
+
+    if (farmer || customer) {
       throw this.error.unprocessable("Email already used by another user");
     }
 
