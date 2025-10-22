@@ -12,19 +12,33 @@ class FarmProductController extends BaseController {
   async getFarmProductById(req, res) {
     const { id } = req.params;
     const data = await this.service.getFarmProductById(id);
-    return this.response.success(res, data, `Farm product fetched successfully.`);
+    return this.response.success(
+      res,
+      data,
+      `Farm product fetched successfully.`
+    );
   }
 
   async getAllFarmProduct(req, res) {
-    const data = await this.service.getAllFarmProduct();
-    return this.response.success(res, data, `Farm products fetched successfully.`);
+    const query = req.query;
+    const data = await this.service.getAllFarmProduct(query);
+    return this.response.success(
+      res,
+      data.data,
+      `Farm products fetched successfully.`,
+      data.meta
+    );
   }
 
   async createFarmProduct(req, res) {
     const info = req.body;
     const farmer_id = req.user.id;
     const data = await this.service.createFarmProduct(info, farmer_id);
-    return this.response.created(res, data, "Farm product created successfully.");
+    return this.response.created(
+      res,
+      data,
+      "Farm product created successfully."
+    );
   }
 
   async updateFarmProduct(req, res) {
@@ -32,14 +46,22 @@ class FarmProductController extends BaseController {
     const { id } = req.params;
     const farmer_id = req.user.id;
     const data = await this.service.updateFarmProduct(id, info, farmer_id);
-    return this.response.success(res, data, "Farm product updated successfully.");
+    return this.response.success(
+      res,
+      data,
+      "Farm product updated successfully."
+    );
   }
 
   async deleteFarmProduct(req, res) {
     const { id } = req.params;
     const farmer_id = req.user.id;
     const data = await this.service.deleteFarmProduct(id, farmer_id);
-    return this.response.success(res, data, "Farm product deleted successfully.");
+    return this.response.success(
+      res,
+      data,
+      "Farm product deleted successfully."
+    );
   }
 }
 

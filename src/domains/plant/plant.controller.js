@@ -16,8 +16,9 @@ class PlantController extends BaseController {
   }
 
   async getAllPlant(req, res) {
-    const data = await this.service.getAllPlant();
-    return this.response.success(res, data, `Plants fetched successfully.`);
+    const query = req.query;
+    const data = await this.service.getAllPlant(query);
+    return this.response.success(res, data.data, `Plants fetched successfully.`, data.meta);
   }
 
   async createPlant(req, res) {
