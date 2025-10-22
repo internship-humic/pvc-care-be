@@ -23,7 +23,7 @@ const registerSchema = Joi.object({
     .min(8)
     .pattern(/^(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/)
     .messages({
-      "string.empty": "Passw2ord is required.",
+      "string.empty": "Password is required.",
       "string.min": "Password must be at least 8 characters long.",
       "string.pattern.base":
         "Password must be at least 8 characters long, contain at least 1 uppercase letter, and 1 special character.",

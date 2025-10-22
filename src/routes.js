@@ -1,16 +1,25 @@
-import authRoutes from "./domains/auth/auth.routes.js";
+import farmerAuthRoutes from "./domains/farmer-auth/farmer-auth.routes.js";
+import customerAuthRoutes from "./domains/customer-auth/customer-auth.routes.js";
+import profileRoutes from "./domains/profile/profile.routes.js";
 import farmRoutes from "./domains/farm/farm.routes.js";
 import farmProductRoutes from "./domains/farm-product/farm-product.routes.js";
 import plantRoutes from "./domains/plant/plant.routes.js";
 import harvestedRoutes from "./domains/farm-product/harvested/harvested.routes.js";
 import plantedRoutes from "./domains/farm-product/planted/planted.routes.js";
 import saleRoutes from "./domains/farm-product/sale/sale.routes.js";
-import farmerProfileRoutes from "./domains/farmer-profile/farmer-profile.routes.js";
 
 const routes = [
   {
-    path: "/auth",
-    route: authRoutes,
+    path: "/farmer-auth",
+    route: farmerAuthRoutes,
+  },
+  {
+    path: "/customer-auth",
+    route: customerAuthRoutes,
+  },
+  {
+    path: "/profile",
+    route: profileRoutes,
   },
   {
     path: "/farm",
@@ -36,10 +45,6 @@ const routes = [
     path: "/sale",
     route: saleRoutes,
   },
-  {
-    path: "/farmer-profile",
-    route: farmerProfileRoutes,
-  }
 ];
 
 export default routes;

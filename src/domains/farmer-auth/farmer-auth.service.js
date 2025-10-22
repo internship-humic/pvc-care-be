@@ -1,16 +1,12 @@
 import BaseService from "../../common/base_classes/base-service.js";
-import {
-  generateToken,
-  matchPassword,
-  hashPassword,
-} from "../../utils/auth.util.js";
-import Roles from "../../common/enums/user-roles.enum.js";
 
-class AuthService extends BaseService {
+class FarmerAuthService extends BaseService {
   constructor() {
     super();
+    // this.error = BaseError
+    // this.db = Prisma
   }
-
+  
   async login(info) {
     const { email, password } = info;
 
@@ -64,4 +60,4 @@ class AuthService extends BaseService {
   }
 }
 
-export default new AuthService();
+export default new FarmerAuthService();
