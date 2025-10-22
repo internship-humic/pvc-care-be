@@ -1,9 +1,12 @@
+import FarmerAuthService from "./farmer-auth.service.js";
 import BaseController from "../../common/base_classes/base-controller.js";
-import AuthService from "./auth.service.js";
 
-class AuthController extends BaseController {
+class FarmerAuthController extends BaseController {
   constructor() {
-    super(AuthService);
+    super(FarmerAuthService);
+    // this.error = BaseError
+    // this.response = BaseResponse
+    // this.service = FarmerAuthService
   }
 
   async login(req, res) {
@@ -21,4 +24,4 @@ class AuthController extends BaseController {
   }
 }
 
-export default new AuthController();
+export default new FarmerAuthController();

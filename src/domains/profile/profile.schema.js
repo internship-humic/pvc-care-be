@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-const updateFarmerProfileSchema = Joi.object({
+const updateProfileSchema = Joi.object({
   name: Joi.string().min(4).messages({
     "string.min": "Name must be at least 4 characters long.",
   }),
@@ -25,5 +25,4 @@ const updateFarmerProfileSchema = Joi.object({
   })
   .unknown(false);
 
-export { updateFarmerProfileSchema };
-// ...existing code...
+export { updateProfileSchema };
