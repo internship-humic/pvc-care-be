@@ -22,6 +22,8 @@ class ProfileService extends BaseService {
         where: { id: user_id },
       });
     }
+
+    delete data.password;
     return data;
   }
 
@@ -51,6 +53,8 @@ class ProfileService extends BaseService {
         updated = await this.db.farmer.findFirst({
           where: { id: user_id },
         });
+
+        delete updated.password;
 
         return updated;
       } else if (role == "CUSTOMER") {
