@@ -20,7 +20,7 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(process.cwd(), "public", "uploads"));
+    cb(null, path.join(process.cwd(), "public", "images"));
   },
   filename: function (req, file, cb) {
     // biar nama filenya unik dan ga bentrok
