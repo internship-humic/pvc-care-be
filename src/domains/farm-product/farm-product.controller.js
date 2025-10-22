@@ -14,9 +14,8 @@ class FarmProductController extends BaseController {
     const data = await this.service.getFarmProductById(id);
     return this.response.success(
       res,
-      data.data,
-      `Farm product fetched successfully.`,
-      data.meta
+      data,
+      `Farm product fetched successfully.`
     );
   }
 
