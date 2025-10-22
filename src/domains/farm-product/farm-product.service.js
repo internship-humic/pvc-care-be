@@ -31,6 +31,11 @@ class FarmProductService extends BaseService {
   async getAllFarmProduct(query) {
     const { page, limit, offset } = getPagination(query);
     const filter = ORMfilterable(query, ["farm_id", "plant_id"]);
+    if (query.plant_name) {
+      filter.plant = {
+        name: { contains: query.plant_name, mode: "insensitive" },
+      };
+    }
     const total = await this.db.farmProduct.count({ where: filter });
 
     const data = await this.db.farmProduct.findMany({
