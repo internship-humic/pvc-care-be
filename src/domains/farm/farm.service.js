@@ -73,8 +73,6 @@ class FarmService extends BaseService {
   async getNearestFarm(info) {
     const { latitude, longitude, maxDistance } = info;
 
-    console.log(latitude, longitude, maxDistance);
-
     const data = await this.db.$queryRaw`
     SELECT
       id,
