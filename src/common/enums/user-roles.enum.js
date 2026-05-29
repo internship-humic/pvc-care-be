@@ -1,7 +1,7 @@
 const Roles = Object.freeze({
-  Customer: "CUSTOMER",
-  Farmer: "FARMER",
-  Admin: "ADMIN",
+  Admin: "Admin",
+  Doctor: "Doctor",
+  Patient: "Patient",
 });
 
 export default Roles;

@@ -1,5 +1,6 @@
 import BaseSeeder from "../../common/base_classes/base-seeder.js";
 import { hashPassword } from "../auth.util.js";
+import Roles from "../../common/enums/user-roles.enum.js";
 
 class AdminSeeder extends BaseSeeder {
   constructor() {
@@ -9,22 +10,23 @@ class AdminSeeder extends BaseSeeder {
   async seed(email, password) {
     const normalized = email.toLowerCase();
 
-    const exists = await this.db.admin.findUnique({
+    const exists = await this.db.user.findUnique({
       where: { email: normalized },
       select: { id: true },
     });
 
     if (exists) {
-      this.log.warn(`Admin with email ${normalized} already exists.`);
+      this.log.warn(`User with email ${normalized} already exists.`);
       process.exit(1);
     }
 
     const hashed = await hashPassword(password);
 
-    const created = await this.db.admin.create({
+    const created = await this.db.user.create({
       data: {
         email: normalized,
         password: hashed,
+        role: Roles.Admin,
       },
     });
 

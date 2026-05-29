@@ -31,5 +31,8 @@
     "multer": "^2.0.2",
     "simple-swizzle": "^0.2.2",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.17.1"
   }
 }

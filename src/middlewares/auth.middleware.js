@@ -27,48 +27,22 @@ class AuthMiddleware {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      if (
-        !decoded ||
-        !decoded.id ||
-        !decoded.role ||
-        !(
-          decoded.role === this.roles.Customer ||
-          decoded.role === this.roles.Farmer
-        )
-      ) {
+      if (!decoded || !decoded.id || !decoded.role) {
         logger.warn("Decoded token is invalid or missing required fields");
         return next(BaseError.forbidden("Token Is Invalid Or No Longer Valid"));
       }
 
-      if (decoded.role === this.roles.Farmer) {
-        const farmer = await this.prisma.farmer.findUnique({
-          where: { id: decoded.id },
-        });
+      const user = await this.prisma.user.findUnique({
+        where: { id: decoded.id },
+      });
 
-        if (!farmer) {
-          logger.warn(`Farmer with ID ${decoded.id} not found in database`);
-          return next(BaseError.notFound("Farmer Not Found"));
-        }
-
-        req.user = farmer;
-        req.user.role = this.roles.Farmer;
-      } else if (decoded.role === this.roles.Customer) {
-        const customer = await this.prisma.customer.findUnique({
-          where: { id: decoded.id },
-        });
-
-        if (!customer) {
-          logger.warn(`Customer with ID ${decoded.id} not found in database`);
-          return next(BaseError.notFound("Customer Not Found"));
-        }
-
-        req.user = customer;
-        req.user.role = this.roles.Customer;
-      } else {
-        logger.warn("Token type is invalid");
-        return next(BaseError.forbidden("Token Is Invalid Or No Longer Valid"));
+      if (!user) {
+        logger.warn(`User with ID ${decoded.id} not found in database`);
+        return next(BaseError.notFound("User Not Found"));
       }
 
+      req.user = user;
+      
       next();
     } catch (err) {
       if (err.message === "invalid signature") {
@@ -86,7 +60,7 @@ class AuthMiddleware {
   role = (roles) => {
     return (req, res, next) => {
       if (req.user.role === this.roles.Admin) {
-        logger.info(`Welkam Atmind`);
+        logger.info(`Welcome Admin`);
         return next();
       }
 
