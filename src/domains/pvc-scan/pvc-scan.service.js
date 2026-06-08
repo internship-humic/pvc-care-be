@@ -79,6 +79,45 @@ class PvcScanService extends BaseService {
       orderBy: { created_at: "desc" }
     });
   }
+
+  async assignDoctor(scanId, userId, patientNote) {
+    const patientProfile = await this.db.patientProfile.findUnique({
+      where: { user_id: userId }
+    });
+
+    if (!patientProfile) {
+      throw this.error.notFound("Patient profile not found for this user");
+    }
+
+    const scan = await this.db.pvcScan.findUnique({
+      where: { id: scanId }
+    });
+
+    if (!scan) {
+      throw this.error.notFound("PvcScan not found");
+    }
+
+    if (scan.patient_profile_id !== patientProfile.id) {
+      throw this.error.forbidden("You are not authorized to update this scan");
+    }
+
+    const doctors = await this.db.doctorProfile.findMany();
+    if (!doctors || doctors.length === 0) {
+      throw this.error.internal("No doctors available to assign");
+    }
+
+    const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
+
+    const updatedScan = await this.db.pvcScan.update({
+      where: { id: scanId },
+      data: {
+        doctor_profile_id: randomDoctor.id,
+        patient_note: patientNote || null,
+      }
+    });
+
+    return updatedScan;
+  }
 }
 
 export default new PvcScanService();

@@ -12,21 +12,19 @@ class PvcScanController extends BaseController {
       throw this.error.badRequest("Image file is required.");
     }
     
-    // Construct public url if needed, e.g., /images/filename
     const documentUrl = `/images/${req.file.filename}`;
     
-    // We get patient id from the auth token
     const userId = req.user.id;
     
     const result = await this.service.uploadScan(userId, documentUrl, req.body);
     
-    return this.response.created(res, "Scan uploaded successfully and is now pending", result);
+    return this.response.created(res, result, "Scan uploaded successfully and is now pending");
   }
 
   async getById(req, res) {
     const { id } = req.params;
     const result = await this.service.getById(id);
-    return this.response.success(res, "Success fetch scan", result);
+    return this.response.success(res, result, "Success fetch scan");
   }
 
   async getAllFromUser(req, res) {
@@ -35,7 +33,17 @@ class PvcScanController extends BaseController {
     
     const result = await this.service.getAllFromUser(userId, role);
     
-    return this.response.success(res, "Success fetch user's scans", result);
+    return this.response.success(res, result, "Success fetch user's scans");
+  }
+
+  async assignDoctor(req, res) {
+    const { id } = req.params;
+    const { patient_note } = req.body;
+    const userId = req.user.id;
+
+    const result = await this.service.assignDoctor(id, userId, patient_note);
+    
+    return this.response.success(res, result, "Doctor assigned successfully");
   }
 }
 
