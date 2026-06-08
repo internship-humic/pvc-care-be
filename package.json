@@ -12,7 +12,7 @@
     "start": "node src/server.js",
     "make:domain": "node src/utils/make-domain.util.js make:domain",
     "seed:admin": "node src/utils/seeders/admin.seeder.js",
-    "seed:doctor": "node src/utils/seeders/doctor.seeder.js",
+    "seed:doctor": "node src/utils/seeders/doctor.seeder.js"
   },
   "dependencies": {
     "@prisma/client": "^6.17.1",

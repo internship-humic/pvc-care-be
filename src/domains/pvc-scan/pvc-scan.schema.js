@@ -10,4 +10,9 @@ const assignDoctorSchema = Joi.object({
   patient_note: Joi.string().optional().allow(""),
 });
 
-export { createPvcScanSchema, assignDoctorSchema };
+const verifyPvcScanSchema = Joi.object({
+  final_result: Joi.string().required(),
+  doctor_note: Joi.string().optional().allow(""),
+});
+
+export { createPvcScanSchema, assignDoctorSchema, verifyPvcScanSchema };
