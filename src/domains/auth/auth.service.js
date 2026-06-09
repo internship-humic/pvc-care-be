@@ -32,6 +32,18 @@ class AuthService extends BaseService {
       throw this.error.unauthorized("Invalid password");
     }
 
+    if (user.role === Roles.Doctor) {
+      const doctorProfile = user.doctor_profile;
+
+      if (!doctorProfile) {
+        throw this.error.notFound("Doctor profile not found for this user");
+      }
+
+      if (doctorProfile.verification_status !== "Verified") {
+        throw this.error.forbidden("Only verified doctors can log in.");
+      }
+    }
+
     const accessToken = generateToken({ id: user.id, role: user.role });
 
     delete user.password;

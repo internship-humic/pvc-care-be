@@ -28,6 +28,12 @@ class PvcScanController extends BaseController {
     return this.response.success(res, result, "Success fetch scan summary");
   }
 
+  async getDoctorDashboardSummary(req, res) {
+    const userId = req.user.id;
+    const result = await this.service.getDoctorDashboardSummary(userId);
+    return this.response.success(res, result, "Success fetch doctor dashboard summary");
+  }
+
   async getHistory(req, res) {
     const userId = req.user.id;
     const role = req.user.role;

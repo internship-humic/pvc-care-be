@@ -53,6 +53,15 @@ class BaseError extends Error {
     );
   }
 
+  static internal(message = StatusCodes.INTERNAL_SERVER_ERROR.codeName) {
+    return new BaseError(
+      StatusCodes.INTERNAL_SERVER_ERROR.code,
+      StatusCodes.INTERNAL_SERVER_ERROR.message,
+      StatusCodes.INTERNAL_SERVER_ERROR.codeName,
+      message
+    );
+  }
+
 }
 
 export default BaseError;

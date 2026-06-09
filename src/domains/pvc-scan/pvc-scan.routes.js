@@ -10,6 +10,11 @@ class PvcScanRoutes extends BaseRoutes {
   }
 
   routes() {
+    this.router.get("/dashboard/summary", [
+      this.auth.authenticate,
+      this.auth.role([this.roles.Doctor]),
+      this.errCatch(this.controller.getDoctorDashboardSummary.bind(this.controller))
+    ]);
     this.router.get("/history/summary", [
       this.auth.authenticate,
       this.auth.role([this.roles.Admin, this.roles.Patient, this.roles.Doctor]),

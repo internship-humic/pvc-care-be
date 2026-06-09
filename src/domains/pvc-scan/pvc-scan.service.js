@@ -88,6 +88,31 @@ class PvcScanService extends BaseService {
     };
   }
 
+  async getDoctorDashboardSummary(userId) {
+    const doctorProfile = await this.db.doctorProfile.findUnique({
+      where: { user_id: userId }
+    });
+
+    if (!doctorProfile) {
+      throw this.error.notFound("Doctor profile not found for this user");
+    }
+
+    if (doctorProfile.verification_status !== "Verified") {
+      throw this.error.forbidden("Only verified doctors can access the dashboard summary");
+    }
+
+    const totalVerified = await this.db.pvcScan.count({
+      where: {
+        doctor_profile_id: doctorProfile.id,
+        verification_status: "Verified",
+      },
+    });
+
+    return {
+      total_verified: totalVerified,
+    };
+  }
+
   async getHistory(userId, role, query = {}) {
     const where = await this.buildAccessWhere(userId, role, query.status);
     const page = Math.max(parseInt(query.page || "1", 10), 1);
@@ -161,9 +186,11 @@ class PvcScanService extends BaseService {
       throw this.error.forbidden("You are not authorized to update this scan");
     }
 
-    const doctors = await this.db.doctorProfile.findMany();
+    const doctors = await this.db.doctorProfile.findMany({
+      where: { verification_status: "Verified" }
+    });
     if (!doctors || doctors.length === 0) {
-      throw this.error.internal("No doctors available to assign");
+      throw this.error.badRequest("No verified doctors are available to assign.");
     }
 
     const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
@@ -187,6 +214,10 @@ class PvcScanService extends BaseService {
 
     if (!doctorProfile) {
       throw this.error.notFound("Doctor profile not found for this user");
+    }
+
+    if (doctorProfile.verification_status !== "Verified") {
+      throw this.error.forbidden("Only verified doctors can verify PVC scans");
     }
 
     const scan = await this.db.pvcScan.findUnique({
