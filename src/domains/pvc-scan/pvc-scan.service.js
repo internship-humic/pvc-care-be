@@ -7,7 +7,7 @@ class PvcScanService extends BaseService {
   }
 
   buildScanDetail(scan) {
-    const confidence = scan.ai_result ? (scan.verification_status === "Verified" ? 98 : 90) : null;
+    const confidence = scan.ai_confidence ?? (scan.ai_result ? (scan.verification_status === "Verified" ? 98 : 90) : null);
 
     return {
       ...scan,
@@ -41,6 +41,7 @@ class PvcScanService extends BaseService {
       patient_profile_id: patientProfile.id,
       document_url: documentUrl,
       ai_result: "Sample Result",
+      ai_confidence: 90,
       verification_status: "Pending",
     };
 
@@ -67,6 +68,7 @@ class PvcScanService extends BaseService {
       select: {
         verification_status: true,
         ai_result: true,
+        ai_confidence: true,
       },
     });
 
@@ -74,7 +76,7 @@ class PvcScanService extends BaseService {
     const verifiedCount = scans.filter((scan) => scan.verification_status === "Verified").length;
     const pendingCount = scans.filter((scan) => scan.verification_status === "Pending").length;
     const confidenceValues = scans
-      .map((scan) => (scan.ai_result ? (scan.verification_status === "Verified" ? 98 : 90) : null))
+      .map((scan) => scan.ai_confidence ?? (scan.ai_result ? (scan.verification_status === "Verified" ? 98 : 90) : null))
       .filter((value) => value !== null);
     const averageConfidence = confidenceValues.length
       ? Math.round(confidenceValues.reduce((sum, value) => sum + value, 0) / confidenceValues.length)
@@ -237,6 +239,7 @@ class PvcScanService extends BaseService {
       data: {
         final_result: finalResult,
         doctor_note: doctorNote || null,
+        ai_confidence: 98,
         verification_status: "Verified",
       },
       include: {

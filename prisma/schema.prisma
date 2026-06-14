@@ -87,6 +87,7 @@ model PvcScan {
   doctor_profile_id   String?
   document_url        String
   ai_result           String?
+  ai_confidence       Int?
   verification_status VerificationStatusType @default(Pending)
   final_result        String?
   doctor_note         String?
