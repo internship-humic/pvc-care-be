@@ -2,6 +2,7 @@ import authRoutes from "./domains/auth/auth.routes.js";
 import pvcScanRoutes from "./domains/pvc-scan/pvc-scan.routes.js";
 import patientProfileRoutes from "./domains/patient-profile/patient-profile.routes.js";
 import doctorProfileRoutes from "./domains/doctor-profile/doctor-profile.routes.js";
+import notificationRoutes from "./domains/notification/notification.routes.js";
 
 const routes = [
   {
@@ -19,6 +20,10 @@ const routes = [
   {
     path: "/doctor-profile",
     route: doctorProfileRoutes,
+  },
+  {
+    path: "/notifications",
+    route: notificationRoutes,
   },
 ];
 

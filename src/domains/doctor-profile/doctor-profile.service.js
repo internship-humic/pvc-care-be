@@ -1,4 +1,5 @@
 import BaseService from "../../common/base_classes/base-service.js";
+import NotificationService from "../notification/notification.service.js";
 
 class DoctorProfileService extends BaseService {
   constructor() {
@@ -103,6 +104,21 @@ class DoctorProfileService extends BaseService {
         verification_status: verificationStatus,
       },
     });
+
+    // Kirim notifikasi ke dokter terkait perubahan status verifikasi
+    try {
+      const isVerified = verificationStatus === "Verified";
+      await NotificationService.createNotification({
+        userId: doctorProfile.user_id,
+        type: isVerified ? "DoctorVerified" : "DoctorDeclined",
+        title: isVerified ? "Akun Dokter Diverifikasi" : "Verifikasi Akun Ditolak",
+        message: isVerified
+          ? "Selamat! Akun dokter Anda telah diverifikasi. Anda sekarang dapat menerima dan memverifikasi scan PVC pasien."
+          : "Maaf, verifikasi akun dokter Anda ditolak. Silakan hubungi administrator untuk informasi lebih lanjut.",
+      });
+    } catch (notifError) {
+      console.error("Failed to create notification for doctor verification:", notifError.message);
+    }
 
     return updatedDoctor;
   }

@@ -1,5 +1,6 @@
 
 import BaseService from "../../common/base_classes/base-service.js";
+import NotificationService from "../notification/notification.service.js";
 
 class PvcScanService extends BaseService {
   constructor() {
@@ -222,6 +223,19 @@ class PvcScanService extends BaseService {
       }
     });
 
+    // Kirim notifikasi ke dokter yang di-assign
+    try {
+      await NotificationService.createNotification({
+        userId: randomDoctor.user_id,
+        type: "NewScanAssigned",
+        title: "Scan PVC Baru Diterima",
+        message: `Anda mendapatkan scan PVC baru dari pasien untuk diverifikasi.`,
+      });
+    } catch (notifError) {
+      // Log error notifikasi tapi jangan gagalkan operasi utama
+      console.error("Failed to create notification for doctor:", notifError.message);
+    }
+
     return updatedScan;
   }
 
@@ -263,6 +277,21 @@ class PvcScanService extends BaseService {
         patient: true,
       },
     });
+
+    // Kirim notifikasi ke pasien bahwa scan telah diverifikasi
+    try {
+      const patientUserId = updatedScan.patient?.user_id;
+      if (patientUserId) {
+        await NotificationService.createNotification({
+          userId: patientUserId,
+          type: "VerificationComplete",
+          title: "Verifikasi Selesai",
+          message: `Dr. ${updatedScan.doctor?.name ?? "Dokter"} telah memverifikasi hasil analisis PVC Anda.`,
+        });
+      }
+    } catch (notifError) {
+      console.error("Failed to create notification for patient:", notifError.message);
+    }
 
     return this.buildScanDetail(updatedScan);
   }

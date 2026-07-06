@@ -37,6 +37,14 @@ enum DoctorVerificationStatus {
   Verified
 }
 
+enum NotificationType {
+  VerificationComplete
+  NewScanAssigned
+  DoctorVerified
+  DoctorDeclined
+  ReminderCheckup
+}
+
 model User {
   id         String   @id @default(uuid())
   email      String   @unique
@@ -47,6 +55,7 @@ model User {
 
   patient_profile PatientProfile?
   doctor_profile  DoctorProfile?
+  notifications   Notification[]
 
   @@map("users")
 }
@@ -74,6 +83,7 @@ model DoctorProfile {
   birthdate           DateTime
   profile_photo       String
   verification_status DoctorVerificationStatus @default(Pending)
+  specialization      String
 
   user      User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
   pvc_scans PvcScan[]
@@ -99,4 +109,18 @@ model PvcScan {
   doctor  DoctorProfile? @relation(fields: [doctor_profile_id], references: [id], onDelete: SetNull)
 
   @@map("pvc_scan")
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  user_id    String
+  type       NotificationType
+  title      String
+  message    String
+  is_read    Boolean          @default(false)
+  created_at DateTime         @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
 }
