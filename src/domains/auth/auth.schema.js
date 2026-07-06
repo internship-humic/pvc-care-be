@@ -44,6 +44,10 @@ export const registerDoctorSchema = Joi.object({
     phone: Joi.string().required(),
     gender: Joi.string().valid("Male", "Female").required(),
     birthdate: Joi.date().iso().required(),
+    specialization: Joi.string().required().messages({
+      "string.empty": "Specialization is required.",
+      "any.required": "Specialization is required.",
+    }),
   }).required().messages({
     "any.required": "Profile information is required for Doctor",
   })

@@ -116,6 +116,7 @@ class AuthService extends BaseService {
           gender: profile.gender,
           birthdate: new Date(profile.birthdate),
           profile_photo: profilePhotoPath,
+          specialization: profile.specialization,
         }
       }
     };
