@@ -23,6 +23,12 @@ class DoctorProfileRoutes extends BaseRoutes {
       this.errCatch(this.controller.updateMyProfile.bind(this.controller)),
     ]);
 
+    this.router.get("/me/patients", [
+      this.auth.authenticate,
+      this.auth.role([this.roles.Doctor]),
+      this.errCatch(this.controller.getMyPatients.bind(this.controller)),
+    ]);
+
     this.router.get("/:id", [
       this.auth.authenticate,
       this.auth.role([this.roles.Admin]),

@@ -24,6 +24,12 @@ class DoctorProfileController extends BaseController {
     return this.response.success(res, result, "Doctor profile updated successfully");
   }
 
+  async getMyPatients(req, res) {
+    const userId = req.user.id;
+    const result = await this.service.getMyPatients(userId, req.query);
+    return this.response.success(res, result, "Success fetch doctor's patients");
+  }
+
   async verifyDoctor(req, res) {
     const { id } = req.params;
     const { verification_status } = req.body;

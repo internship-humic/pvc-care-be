@@ -9,6 +9,9 @@ const updateDoctorProfileSchema = Joi.object({
   phone: Joi.string().optional(),
   gender: Joi.string().valid("Male", "Female").optional(),
   birthdate: Joi.date().iso().optional(),
+  // profile_photo is handled by multer (req.file), but some clients
+  // send it as a body field too — allow it here to avoid Joi rejection.
+  profile_photo: Joi.any().optional(),
 });
 
 export { verifyDoctorSchema, updateDoctorProfileSchema };
