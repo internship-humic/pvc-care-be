@@ -60,11 +60,9 @@ class PvcScanController extends BaseController {
 
   async assignDoctor(req, res) {
     const { id } = req.params;
-    const { patient_note } = req.body || {};
     const userId = req.user.id;
-
-    const result = await this.service.assignDoctor(id, userId, patient_note);
-    
+    const { patient_note, doctor_profile_id } = req.body;
+    const result = await this.service.assignDoctor(id, userId, patient_note, doctor_profile_id);
     return this.response.success(res, result, "Doctor assigned successfully");
   }
 

@@ -23,6 +23,11 @@ class PatientProfileController extends BaseController {
     const result = await this.service.updateMyPassword(userId, req.body);
     return this.response.success(res, result, "Password updated successfully");
   }
+
+  async getAll(req, res) {
+    const result = await this.service.getAll(req.query);
+    return this.response.success(res, result, "Success fetch all patient profiles");
+  }
 }
 
 export default new PatientProfileController();

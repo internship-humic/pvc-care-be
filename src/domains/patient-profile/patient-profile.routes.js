@@ -27,6 +27,12 @@ class PatientProfileRoutes extends BaseRoutes {
       this.validate(updatePatientPasswordSchema),
       this.errCatch(this.controller.updateMyPassword.bind(this.controller)),
     ]);
+
+    this.router.get("/", [
+      this.auth.authenticate,
+      this.auth.role([this.roles.Admin]),
+      this.errCatch(this.controller.getAll.bind(this.controller)),
+    ]);
   }
 }
 

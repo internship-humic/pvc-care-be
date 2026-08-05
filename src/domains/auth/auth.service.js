@@ -39,9 +39,9 @@ class AuthService extends BaseService {
         throw this.error.notFound("Doctor profile not found for this user");
       }
 
-      if (doctorProfile.verification_status !== "Verified") {
-        throw this.error.forbidden("Only verified doctors can log in.");
-      }
+      // if (doctorProfile.verification_status !== "Verified") {
+      //   throw this.error.forbidden("Only verified doctors can log in.");
+      // }
     }
 
     const accessToken = generateToken({ id: user.id, role: user.role });
@@ -131,6 +131,31 @@ class AuthService extends BaseService {
     delete newUser.password;
 
     return { user: newUser };
+  }
+
+  async changePassword(userId, oldPassword, newPassword) {
+    const user = await this.db.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw this.error.notFound("User not found");
+    }
+
+    const isMatch = await matchPassword(oldPassword, user.password);
+
+    if (!isMatch) {
+      throw this.error.unauthorized("Password lama salah");
+    }
+
+    await this.db.user.update({
+      where: { id: userId },
+      data: {
+        password: await hashPassword(newPassword),
+      },
+    });
+
+    return { message: "Password updated successfully" };
   }
 }
 

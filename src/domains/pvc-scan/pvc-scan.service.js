@@ -104,15 +104,25 @@ class PvcScanService extends BaseService {
       throw this.error.forbidden("Only verified doctors can access the dashboard summary");
     }
 
-    const totalVerified = await this.db.pvcScan.count({
-      where: {
-        doctor_profile_id: doctorProfile.id,
-        verification_status: "Verified",
-      },
-    });
+    const [totalVerified, totalPending] = await Promise.all([
+      this.db.pvcScan.count({
+        where: {
+          doctor_profile_id: doctorProfile.id,
+          verification_status: "Verified",
+        },
+      }),
+      this.db.pvcScan.count({
+        where: {
+          doctor_profile_id: doctorProfile.id,
+          verification_status: "Pending",
+        },
+      }),
+    ]);
 
     return {
-      total_verified: totalVerified,
+      total_verifications: totalVerified + totalPending,
+      verified_count: totalVerified,
+      pending_count: totalPending,
     };
   }
 
@@ -184,7 +194,7 @@ class PvcScanService extends BaseService {
     return history.data;
   }
 
-  async assignDoctor(scanId, userId, patientNote) {
+  async assignDoctor(scanId, userId, patientNote, doctorProfileId = null) {
     const patientProfile = await this.db.patientProfile.findUnique({
       where: { user_id: userId }
     });
@@ -205,19 +215,34 @@ class PvcScanService extends BaseService {
       throw this.error.forbidden("You are not authorized to update this scan");
     }
 
-    const doctors = await this.db.doctorProfile.findMany({
-      where: { verification_status: "Verified" }
-    });
-    if (!doctors || doctors.length === 0) {
-      throw this.error.badRequest("No verified doctors are available to assign.");
+    let assignedDoctorId = doctorProfileId;
+
+    if (!assignedDoctorId) {
+      const doctors = await this.db.doctorProfile.findMany({
+        where: { verification_status: "Verified" }
+      });
+      if (!doctors || doctors.length === 0) {
+        throw this.error.badRequest("No verified doctors are available to assign.");
+      }
+      const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
+      assignedDoctorId = randomDoctor.id;
+    } else {
+      const doctor = await this.db.doctorProfile.findUnique({
+        where: { id: assignedDoctorId }
+      });
+      if (!doctor || doctor.verification_status !== "Verified") {
+        throw this.error.notFound("Verified doctor profile not found");
+      }
     }
 
-    const randomDoctor = doctors[Math.floor(Math.random() * doctors.length)];
+    const targetDoctor = await this.db.doctorProfile.findUnique({
+      where: { id: assignedDoctorId }
+    });
 
     const updatedScan = await this.db.pvcScan.update({
       where: { id: scanId },
       data: {
-        doctor_profile_id: randomDoctor.id,
+        doctor_profile_id: assignedDoctorId,
         patient_note: patientNote || null,
         verification_status: "Pending",
       }
@@ -226,7 +251,7 @@ class PvcScanService extends BaseService {
     // Kirim notifikasi ke dokter yang di-assign
     try {
       await NotificationService.createNotification({
-        userId: randomDoctor.user_id,
+        userId: targetDoctor.user_id,
         type: "NewScanAssigned",
         title: "Scan PVC Baru Diterima",
         message: `Anda mendapatkan scan PVC baru dari pasien untuk diverifikasi.`,

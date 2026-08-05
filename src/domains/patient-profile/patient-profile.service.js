@@ -105,6 +105,31 @@ class PatientProfileService extends BaseService {
       password_updated: true,
     };
   }
+
+  async getAll(query = {}) {
+    const page = Math.max(parseInt(query.page || "1", 10), 1);
+    const limit = Math.min(Math.max(parseInt(query.limit || "100", 10), 1), 100);
+    const skip = (page - 1) * limit;
+
+    const patients = await this.db.patientProfile.findMany({
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
+      },
+      orderBy: { name: "asc" },
+    });
+
+    return patients;
+  }
 }
 
 export default new PatientProfileService();

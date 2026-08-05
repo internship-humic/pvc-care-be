@@ -8,6 +8,7 @@ const createPvcScanSchema = Joi.object({
 
 const assignDoctorSchema = Joi.object({
   patient_note: Joi.string().optional().allow(""),
+  doctor_profile_id: Joi.string().uuid().optional().allow(null, ""),
 });
 
 const verifyPvcScanSchema = Joi.object({

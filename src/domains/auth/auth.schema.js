@@ -52,3 +52,13 @@ export const registerDoctorSchema = Joi.object({
     "any.required": "Profile information is required for Doctor",
   })
 });
+
+export const changePasswordSchema = Joi.object({
+  old_password: Joi.string().required().messages({
+    "string.empty": "Old password is required.",
+  }),
+  new_password: Joi.string().required().min(6).messages({
+    "string.empty": "New password is required.",
+    "string.min": "New password must be at least 6 characters long.",
+  }),
+});

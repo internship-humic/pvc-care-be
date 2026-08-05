@@ -36,6 +36,16 @@ class DoctorProfileController extends BaseController {
     const result = await this.service.verifyDoctor(id, verification_status);
     return this.response.success(res, result, "Doctor verification updated successfully");
   }
+
+  async getAll(req, res) {
+    const result = await this.service.getAll(req.query);
+    return this.response.success(res, result, "Success fetch all doctor profiles");
+  }
+
+  async getPublicDoctors(req, res) {
+    const result = await this.service.getPublicDoctors();
+    return this.response.success(res, result, "Success fetch public doctor profiles");
+  }
 }
 
 export default new DoctorProfileController();

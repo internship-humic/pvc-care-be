@@ -29,6 +29,10 @@ class DoctorProfileRoutes extends BaseRoutes {
       this.errCatch(this.controller.getMyPatients.bind(this.controller)),
     ]);
 
+    this.router.get("/public", [
+      this.errCatch(this.controller.getPublicDoctors.bind(this.controller)),
+    ]);
+
     this.router.get("/:id", [
       this.auth.authenticate,
       this.auth.role([this.roles.Admin]),
@@ -40,6 +44,12 @@ class DoctorProfileRoutes extends BaseRoutes {
       this.auth.role([this.roles.Admin]),
       this.validate(verifyDoctorSchema),
       this.errCatch(this.controller.verifyDoctor.bind(this.controller)),
+    ]);
+
+    this.router.get("/", [
+      this.auth.authenticate,
+      this.auth.role([this.roles.Admin]),
+      this.errCatch(this.controller.getAll.bind(this.controller)),
     ]);
   }
 }

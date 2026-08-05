@@ -212,6 +212,42 @@ class DoctorProfileService extends BaseService {
 
     return updatedDoctor;
   }
+
+  async getAll(query = {}) {
+    const page = Math.max(parseInt(query.page || "1", 10), 1);
+    const limit = Math.min(Math.max(parseInt(query.limit || "100", 10), 1), 100);
+    const skip = (page - 1) * limit;
+
+    const doctors = await this.db.doctorProfile.findMany({
+      skip,
+      take: limit,
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            created_at: true,
+            updated_at: true,
+          },
+        },
+      },
+      orderBy: { name: "asc" },
+    });
+
+    return doctors;
+  }
+
+  async getPublicDoctors() {
+    const doctors = await this.db.doctorProfile.findMany({
+      where: {
+        verification_status: "Verified",
+      },
+      orderBy: { name: "asc" },
+    });
+
+    return doctors;
+  }
 }
 
 export default new DoctorProfileService();

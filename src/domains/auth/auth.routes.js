@@ -1,6 +1,6 @@
 import AuthController from "./auth.controller.js";
 import BaseRoutes from "../../common/base_classes/base-routes.js";
-import { loginSchema, registerPatientSchema, registerDoctorSchema } from "./auth.schema.js";
+import { loginSchema, registerPatientSchema, registerDoctorSchema, changePasswordSchema } from "./auth.schema.js";
 import upload from "../../utils/image.util.js";
 
 class AuthRoutes extends BaseRoutes {
@@ -19,8 +19,23 @@ class AuthRoutes extends BaseRoutes {
     ]);
     this.router.post("/register/doctor", [
       upload.single("profile_photo"),
+      (req, res, next) => {
+        if (typeof req.body.profile === "string") {
+          try {
+            req.body.profile = JSON.parse(req.body.profile);
+          } catch (e) {
+            // Let schema validation handle format errors
+          }
+        }
+        next();
+      },
       this.validate(registerDoctorSchema),
       this.errCatch(this.controller.registerDoctor.bind(this.controller)),
+    ]);
+    this.router.patch("/change-password", [
+      this.auth.authenticate,
+      this.validate(changePasswordSchema),
+      this.errCatch(this.controller.changePassword.bind(this.controller)),
     ]);
   }
 }

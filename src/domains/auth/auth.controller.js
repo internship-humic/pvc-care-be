@@ -27,6 +27,14 @@ class AuthController extends BaseController {
 
     return this.response.created(res, data, "Registration Successful");
   }
+
+  async changePassword(req, res) {
+    const userId = req.user.id;
+    const { old_password, new_password } = req.body;
+    await this.service.changePassword(userId, old_password, new_password);
+
+    return this.response.success(res, null, "Password updated successfully");
+  }
 }
 
 export default new AuthController();
